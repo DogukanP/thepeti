@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "562060410220",
+    "project_id": "thepeti-398ea",
+    "storage_bucket": "thepeti-398ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562060410220:android:86dae8409124eb189e4749",
+        "android_client_info": {
+          "package_name": "com.example.thepeti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "562060410220-ecksbbgup79nbrjm6vcfpqvnt2h0f4bf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASrNCVzN90ogyaze0fQWEZvgmXh_4z0hs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "562060410220-ecksbbgup79nbrjm6vcfpqvnt2h0f4bf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
