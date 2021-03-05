@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
+import 'package:thepeti/screens/homeScreen.dart';
+import 'package:thepeti/services/authorizationService.dart';
+import 'package:thepeti/services/fireStoreService.dart';
 
 // ignore: must_be_immutable
 class BeKeeper3 extends StatefulWidget {
@@ -15,6 +19,7 @@ class BeKeeper3 extends StatefulWidget {
 class _BeKeeper3State extends State<BeKeeper3> {
   DateFormat formatter = DateFormat('dd/MM/yyyy');
   String note;
+  bool loading = false;
   final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -22,6 +27,7 @@ class _BeKeeper3State extends State<BeKeeper3> {
       appBar: AppBar(
         title: Text(
           (formatter.format(widget.pettingDate)).toString(),
+          textAlign: TextAlign.center,
           style: textBlackC,
         ),
         backgroundColor: Colors.white,
@@ -29,6 +35,13 @@ class _BeKeeper3State extends State<BeKeeper3> {
       body: ListView(
         padding: EdgeInsets.fromLTRB(20.0, 150.0, 20.0, 0),
         children: [
+          loading
+              ? LinearProgressIndicator(
+                  backgroundColor: primaryColor,
+                )
+              : SizedBox(
+                  height: 0.0,
+                ),
           Form(
               key: formKey,
               child: Column(
@@ -85,14 +98,33 @@ class _BeKeeper3State extends State<BeKeeper3> {
     );
   }
 
-  finish() {
+  finish() async {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
-      print(widget.city);
-      print(widget.district);
-      print(widget.pettingDate);
-      print(widget.price);
-      print(note);
+      if (!loading) {
+        setState(() {
+          loading = true;
+        });
+        String activeUserId =
+            Provider.of<AuthorizationService>(context, listen: false)
+                .activeUserId;
+        await FireStoreService().createPetting(
+            city: widget.city,
+            district: widget.district,
+            note: note,
+            pettingDate: widget.pettingDate,
+            price: widget.price,
+            userId: activeUserId);
+
+        setState(() {
+          loading = false;
+        });
+
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
+            (Route<dynamic> route) => route is HomeScreen);
+      }
     }
   }
 }

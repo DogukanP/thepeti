@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Petting {
-  int pettingId;
-  int userId;
+  String pettingId;
+  String userId;
   int price;
-  DateTime pettingDate;
+  Timestamp pettingDate;
   String district;
   String city;
   String note;
@@ -16,25 +18,15 @@ class Petting {
       this.city,
       this.note});
 
-  // Petting.fromJson(Map<String, dynamic> json) {
-  //   pettingId = json['pettingId'];
-  //   userId = json['userId'];
-  //   price = json['price'];
-  //   pettingDate = json['pettingDate'];
-  //   district = json['district'];
-  //   city = json['city'];
-  //   note = json['note'];
-  // }
-
-  // Map<String, dynamic> toJson() {
-  //   final Map<String, dynamic> data = new Map<String, dynamic>();
-  //   data['pettingId'] = this.pettingId;
-  //   data['userId'] = this.userId;
-  //   data['price'] = this.price;
-  //   data['pettingDate'] = this.pettingDate;
-  //   data['district'] = this.district;
-  //   data['city'] = this.city;
-  //   data['note'] = this.note;
-  //   return data;
-  // }
+  factory Petting.createFromDocument(DocumentSnapshot doc) {
+    return Petting(
+      pettingId: doc.documentID,
+      userId: doc["userId"],
+      price: doc["price"],
+      city: doc["city"],
+      district: doc["district"],
+      pettingDate: doc["pettingDate"],
+      note: doc["pettingDate"],
+    );
+  }
 }

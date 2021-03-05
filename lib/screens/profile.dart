@@ -19,7 +19,7 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Profil",
+          "PROFİL",
           style: textBlackC,
         ),
         backgroundColor: Colors.white,
@@ -80,7 +80,9 @@ class _ProfileState extends State<Profile> {
               CircleAvatar(
                 backgroundColor: Colors.grey[300],
                 radius: 50.0,
-                backgroundImage: NetworkImage(profileData.imageURL),
+                backgroundImage: profileData.imageURL.isNotEmpty
+                    ? NetworkImage(profileData.imageURL)
+                    : AssetImage("assets/profile_photo.png"),
               ),
               Expanded(
                   child: Row(
@@ -97,10 +99,10 @@ class _ProfileState extends State<Profile> {
                       SizedBox(
                         height: 12.0,
                       ),
-                      Text(
-                        calculateAge(profileData.birthDate),
-                        style: text18,
-                      ),
+                      // Text(
+                      //   profileData.birthDate,
+                      //   style: text18,
+                      // ),
                       Container(
                         height: 1.8,
                         color: Colors.grey[600],
@@ -114,23 +116,6 @@ class _ProfileState extends State<Profile> {
         ],
       ),
     );
-  }
-
-  calculateAge(DateTime birthDate) {
-    DateTime currentDate = DateTime.now();
-    int age = currentDate.year - birthDate.year;
-    int month1 = currentDate.month;
-    int month2 = birthDate.month;
-    if (month2 > month1) {
-      age--;
-    } else if (month1 == month2) {
-      int day1 = currentDate.day;
-      int day2 = birthDate.day;
-      if (day2 > day1) {
-        age--;
-      }
-    }
-    return age;
   }
 
   logout() {

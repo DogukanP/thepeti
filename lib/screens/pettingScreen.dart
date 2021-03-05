@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
+import 'package:thepeti/models/petting.dart';
 import 'package:thepeti/screens/profile.dart';
 import 'package:thepeti/services/authorizationService.dart';
+import 'package:thepeti/services/fireStoreService.dart';
 
 class PettingScreen extends StatefulWidget {
   @override
@@ -10,9 +12,20 @@ class PettingScreen extends StatefulWidget {
 }
 
 class _PettingScreenState extends State<PettingScreen> {
+  List<Petting> pettings = [];
+
+  getPettings() async {
+    List<Petting> pettings = await FireStoreService().getPetting(
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId);
+    setState(() {
+      pettings = pettings;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         title: Text(
           "PETTING",
@@ -45,6 +58,9 @@ class _PettingScreenState extends State<PettingScreen> {
               }),
         ],
       ),
+      // body: showPettings(),
     );
   }
+
+  // Widget showPettings() {}
 }

@@ -29,13 +29,27 @@ class User {
       firstName: doc["firstName"],
       lastName: doc["lastName"],
       email: doc["email"],
-      birthDate: doc["birthDate"],
+      // birthDate: doc["birthDate"],
       password: doc["password"],
-      createdDate: doc["createdDate"],
+      // createdDate: doc["createdDate"],
       imageURL: doc["imageURL"],
       bio: doc["bio"],
     );
   }
+
+  // factory User.createdFromDocument(DocumentSnapshot doc) {
+  //   return User(
+  //     firstName: doc["firstName"],
+  //     imageURL: doc["imageURL"],
+  //     // birthDate: doc["birthDate"],
+  //     userId: doc.documentID,
+  //     lastName: doc["lastName"],
+  //     email: doc["email"],
+  //     password: doc["password"],
+  //     // createdDate: doc["createdDate"],
+  //     bio: doc["bio"],
+  //   );
+  // }
 
   factory User.createFromFirebase(FirebaseUser user) {
     return User(

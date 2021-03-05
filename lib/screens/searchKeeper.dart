@@ -16,6 +16,7 @@ class _SearchKeeperState extends State<SearchKeeper> {
       appBar: AppBar(
         title: Text(
           "BAKICI ARA",
+          textAlign: TextAlign.start,
           style: textBlackC,
         ),
         backgroundColor: Colors.white,
