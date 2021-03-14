@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +6,7 @@ import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/user.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
+import 'package:thepeti/widgets/calculateAge.dart';
 
 class Register2 extends StatefulWidget {
   final User user;
@@ -105,8 +107,9 @@ class _Register2State extends State<Register2> {
                           return null;
                         },
                         onSaved: (String value) {
-                          value = birthDate as String;
-                          widget.user.birthDate = DateTime.parse(value);
+                          value = birthDate.toString();
+                          widget.user.birthDate =
+                              Timestamp.fromDate(DateTime.parse(value));
                         },
                       ),
                       SizedBox(
@@ -162,7 +165,7 @@ class _Register2State extends State<Register2> {
             widget.user.email, widget.user.password);
         if (user != null) {
           FireStoreService().createUser(
-              userId: widget.user.userId,
+              userId: user.userId,
               email: widget.user.email,
               password: widget.user.password,
               firstName: widget.user.firstName,
@@ -205,23 +208,6 @@ class _Register2State extends State<Register2> {
             TextEditingValue(text: formatter.format(picked));
       });
     }
-  }
-
-  calculateAge(DateTime birthDate) {
-    DateTime currentDate = DateTime.now();
-    int age = currentDate.year - birthDate.year;
-    int month1 = currentDate.month;
-    int month2 = birthDate.month;
-    if (month2 > month1) {
-      age--;
-    } else if (month1 == month2) {
-      int day1 = currentDate.day;
-      int day2 = birthDate.day;
-      if (day2 > day1) {
-        age--;
-      }
-    }
-    return age;
   }
 
   showError({errorCode}) {

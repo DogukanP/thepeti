@@ -24,6 +24,7 @@ class _BeKeeper2State extends State<BeKeeper2> {
           formatter.format(widget.pettingDate).toString(),
           style: textBlackC,
         ),
+        centerTitle: true,
         backgroundColor: Colors.white,
       ),
       body: ListView(
@@ -50,7 +51,7 @@ class _BeKeeper2State extends State<BeKeeper2> {
                           return null;
                         },
                         onSaved: (String value) {
-                          district = value;
+                          district = value.toUpperCase();
                         },
                       ),
                       SizedBox(
@@ -70,7 +71,7 @@ class _BeKeeper2State extends State<BeKeeper2> {
                           return null;
                         },
                         onSaved: (String value) {
-                          city = value;
+                          city = value.toUpperCase();
                         },
                       ),
                       SizedBox(

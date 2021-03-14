@@ -4,7 +4,7 @@ import 'package:thepeti/models/user.dart';
 
 class FireStoreService {
   final Firestore firestore = Firestore.instance;
-  final DateTime time = DateTime.now();
+  final Timestamp time = Timestamp.now();
 
   Future<void> createUser(
       {userId,
@@ -12,7 +12,7 @@ class FireStoreService {
       password = "",
       firstName,
       lastName = "",
-      birthDate = "",
+      birthDate,
       imageURL = ""}) async {
     await firestore.collection("User").document(userId).setData({
       "firstName": firstName,
@@ -34,6 +34,21 @@ class FireStoreService {
       return user;
     }
     return null;
+  }
+
+  void editUser({
+    String userId,
+    String firstName,
+    String lastName,
+    String bio,
+    // String imageURL = "",
+  }) {
+    firestore.collection("User").document(userId).updateData({
+      "firstName": firstName,
+      "lastName": lastName,
+      "bio": bio,
+      // "imageURL": imageURL,
+    });
   }
 
   Future<void> createPetting(
@@ -58,7 +73,7 @@ class FireStoreService {
         .collection("Petting")
         .document(userId)
         .collection("UserPetting")
-        .orderBy("pettindDate", descending: false)
+        .orderBy("pettingDate", descending: false)
         .getDocuments();
     List<Petting> pettings = snapshot.documents
         .map((doc) => Petting.createFromDocument(doc))

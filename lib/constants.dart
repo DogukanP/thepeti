@@ -8,6 +8,8 @@ const text70 = TextStyle(
     fontSize: 70.0, fontWeight: FontWeight.bold, fontFamily: "Montserrat");
 const text60 = TextStyle(
     fontSize: 60.0, fontWeight: FontWeight.bold, fontFamily: "Montserrat");
+const text50 = TextStyle(
+    fontSize: 50.0, fontWeight: FontWeight.bold, fontFamily: "Montserrat");
 const text30 = TextStyle(
     fontSize: 30.0, fontWeight: FontWeight.bold, fontFamily: "Montserrat");
 const text18 = TextStyle(

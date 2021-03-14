@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Petting {
-  String pettingId;
-  String userId;
-  int price;
-  Timestamp pettingDate;
-  String district;
-  String city;
-  String note;
+  final String pettingId;
+  final String userId;
+  final int price;
+  final Timestamp pettingDate;
+  final String district;
+  final String city;
+  final String note;
 
   Petting(
       {this.pettingId,
@@ -19,14 +19,15 @@ class Petting {
       this.note});
 
   factory Petting.createFromDocument(DocumentSnapshot doc) {
+    var docData = doc.data;
     return Petting(
       pettingId: doc.documentID,
-      userId: doc["userId"],
-      price: doc["price"],
-      city: doc["city"],
-      district: doc["district"],
-      pettingDate: doc["pettingDate"],
-      note: doc["pettingDate"],
+      userId: docData["userId"],
+      price: docData["price"],
+      city: docData["city"],
+      district: docData["district"],
+      pettingDate: docData["pettingDate"],
+      note: docData["note"],
     );
   }
 }

@@ -1,27 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Peti {
-  int petiId;
+  String petiId;
   String name;
   String genus;
-  String createdDate;
+  Timestamp createdDate;
   String imageURL;
+  String ownerId;
 
-  Peti({this.petiId, this.name, this.genus, this.createdDate, this.imageURL});
-
-  Peti.fromJson(Map<String, dynamic> json) {
-    petiId = json['petiId'];
-    name = json['name'];
-    genus = json['genus'];
-    createdDate = json['createdDate'];
-    imageURL = json['imageURL'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['petiId'] = this.petiId;
-    data['name'] = this.name;
-    data['genus'] = this.genus;
-    data['createdDate'] = this.createdDate;
-    data['imageURL'] = this.imageURL;
-    return data;
-  }
+  Peti(
+      {this.petiId,
+      this.name,
+      this.genus,
+      this.createdDate,
+      this.imageURL,
+      this.ownerId});
 }

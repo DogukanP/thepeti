@@ -115,10 +115,7 @@ class _LoginPageState extends State<LoginPage> {
             alignment: Alignment(1.0, 0.0),
             padding: EdgeInsets.only(top: 15.0, left: 20.0),
             child: InkWell(
-              onTap: () {
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (context) => ForgotPassword()));
-              },
+              onTap: () {},
               child: Text(
                 "ŞİFREMİ UNUTTUM",
                 style: textPrimaryC,
@@ -200,11 +197,13 @@ class _LoginPageState extends State<LoginPage> {
               InkWell(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => Register1(
-                                user: newUser,
-                              )));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Register1(
+                        user: newUser,
+                      ),
+                    ),
+                  );
                 },
                 child: Text(
                   "KAYDOL",
@@ -255,7 +254,6 @@ class _LoginPageState extends State<LoginPage> {
             email: user.email,
             firstName: user.firstName,
             imageURL: user.imageURL,
-            // birthDate: user.birthDate,
           );
         }
       }

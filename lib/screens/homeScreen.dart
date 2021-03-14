@@ -39,11 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           PettingScreen(),
           SearchKeeper(),
-          // Profile(
-          //   profileOwnerId:
-          //       Provider.of<AuthorizationService>(context, listen: false)
-          //           .activeUserId,
-          // ),
           BeKeeper(),
         ],
       ),

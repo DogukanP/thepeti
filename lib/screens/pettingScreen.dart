@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/petting.dart';
+import 'package:thepeti/models/user.dart';
 import 'package:thepeti/screens/profile.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
+import 'package:thepeti/widgets/pettingCard.dart';
 
 class PettingScreen extends StatefulWidget {
   @override
@@ -12,14 +14,21 @@ class PettingScreen extends StatefulWidget {
 }
 
 class _PettingScreenState extends State<PettingScreen> {
-  List<Petting> pettings = [];
+  List<Petting> pettinglist = [];
 
   getPettings() async {
-    List<Petting> pettings = await FireStoreService().getPetting(
-        Provider.of<AuthorizationService>(context, listen: false).activeUserId);
+    String activeUserId =
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
+    List<Petting> pettings = await FireStoreService().getPetting(activeUserId);
     setState(() {
-      pettings = pettings;
+      pettinglist = pettings;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPettings();
   }
 
   @override
@@ -35,7 +44,7 @@ class _PettingScreenState extends State<PettingScreen> {
         actions: [
           IconButton(
               icon: Icon(Icons.mail_outline, color: Colors.black),
-              onPressed: null),
+              onPressed: () {}),
           SizedBox(
             width: 5.0,
           ),
@@ -58,9 +67,28 @@ class _PettingScreenState extends State<PettingScreen> {
               }),
         ],
       ),
-      // body: showPettings(),
+      body: ListView.builder(
+        itemCount: pettinglist.length,
+        itemBuilder: (context, index) {
+          Petting petting = pettinglist[index];
+          return FutureBuilder(
+            future: FireStoreService().getUser(petting.userId),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container(
+                  color: Colors.white,
+                  height: 500,
+                );
+              }
+              User user = snapshot.data;
+              return PettingCard(
+                petting: petting,
+                user: user,
+              );
+            },
+          );
+        },
+      ),
     );
   }
-
-  // Widget showPettings() {}
 }

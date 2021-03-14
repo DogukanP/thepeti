@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +31,7 @@ class _BeKeeper3State extends State<BeKeeper3> {
           textAlign: TextAlign.center,
           style: textBlackC,
         ),
+        centerTitle: true,
         backgroundColor: Colors.white,
       ),
       body: ListView(
@@ -112,7 +114,7 @@ class _BeKeeper3State extends State<BeKeeper3> {
             city: widget.city,
             district: widget.district,
             note: note,
-            pettingDate: widget.pettingDate,
+            pettingDate: Timestamp.fromDate(widget.pettingDate),
             price: widget.price,
             userId: activeUserId);
 

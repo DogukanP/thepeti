@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/user.dart';
+import 'package:thepeti/screens/editProfile.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
+import 'package:thepeti/widgets/calculateAge.dart';
 
 class Profile extends StatefulWidget {
   final String profileOwnerId;
@@ -14,6 +16,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  User profileOwner;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,6 +25,7 @@ class _ProfileState extends State<Profile> {
           "PROFİL",
           style: textBlackC,
         ),
+        centerTitle: true,
         backgroundColor: Colors.white,
         actions: [
           IconButton(
@@ -29,7 +33,14 @@ class _ProfileState extends State<Profile> {
                 Icons.settings,
                 color: Colors.black,
               ),
-              onPressed: null)
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => EditProfile(
+                              profile: profileOwner,
+                            )));
+              }),
         ],
       ),
       body: FutureBuilder<Object>(
@@ -40,6 +51,8 @@ class _ProfileState extends State<Profile> {
                 child: CircularProgressIndicator(),
               );
             }
+            profileOwner = snapshot.data;
+
             return ListView(
               children: <Widget>[
                 detailProfile(snapshot.data),
@@ -85,34 +98,88 @@ class _ProfileState extends State<Profile> {
                     : AssetImage("assets/profile_photo.png"),
               ),
               Expanded(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        profileData.firstName,
-                        style: text18,
-                      ),
-                      SizedBox(
-                        height: 12.0,
-                      ),
-                      // Text(
-                      //   profileData.birthDate,
-                      //   style: text18,
-                      // ),
-                      Container(
-                        height: 1.8,
-                        color: Colors.grey[600],
-                      )
-                    ],
-                  ),
-                ],
-              ))
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          profileData.firstName
+                              .split(" ")[0]
+                              .toString()
+                              .toUpperCase(),
+                          style: text18,
+                        ),
+                        SizedBox(
+                          height: 12.0,
+                        ),
+                        (profileData.birthDate != null ||
+                                // ignore: unrelated_type_equality_checks
+                                profileData.birthDate == "")
+                            ? Text(
+                                calculateAge(profileData.birthDate.toDate())
+                                        .toString() +
+                                    " YAŞINDA",
+                                style: text18,
+                              )
+                            : SizedBox(
+                                height: 0,
+                              ),
+                        Container(
+                          height: 1.3,
+                          color: Colors.grey[500],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
+          Container(
+            child: (profileData.bio != "")
+                ? Column(
+                    children: [
+                      SizedBox(
+                        height: 50.0,
+                      ),
+                      Container(
+                        height: 3.5,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  )
+                : SizedBox(
+                    height: 0,
+                  ),
+          ),
+          SizedBox(
+            height: 35.0,
+          ),
+          Column(
+            children: [
+              Container(
+                child: (profileData.bio != "")
+                    ? Text(
+                        profileData.bio.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: text18,
+                      )
+                    : SizedBox(
+                        height: 5,
+                      ),
+              ),
+              SizedBox(
+                height: 35.0,
+              ),
+              Container(
+                height: 3.5,
+                color: Colors.grey,
+              ),
+            ],
+          )
         ],
       ),
     );
