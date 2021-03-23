@@ -27,7 +27,9 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
               width: 400,
               child: ElevatedButton(
                 child: Text("FOTOĞRAF ÇEK"),
-                onPressed: () {},
+                onPressed: () {
+                  takePhoto();
+                },
                 style: ElevatedButton.styleFrom(
                   primary: primaryColor,
                   onPrimary: Colors.white,
@@ -42,7 +44,9 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
               height: 60.0,
               width: 400.0,
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  choosePhoto();
+                },
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(
@@ -82,6 +86,7 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
     setState(() {
       file = File(image.path);
     });
+    Navigator.pop(context, file);
   }
 
   choosePhoto() async {
@@ -93,5 +98,7 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
     setState(() {
       file = File(image.path);
     });
+
+    Navigator.pop(context, file);
   }
 }

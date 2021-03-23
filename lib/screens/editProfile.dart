@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
+import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/user.dart';
+import 'package:thepeti/screens/addPeti.dart';
 import 'package:thepeti/screens/profilePhoto.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
+import 'package:thepeti/services/storageService.dart';
 
 class EditProfile extends StatefulWidget {
   final User profile;
@@ -14,6 +19,23 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
+  List<Peti> petiList = [];
+  getPetis() async {
+    String activeUserId =
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
+    List<Peti> petis = await FireStoreService().getPeti(activeUserId);
+    setState(() {
+      petiList = petis;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPetis();
+  }
+
+  File file;
   var formKey = GlobalKey<FormState>();
   String firstName, lastName, bio;
   @override
@@ -39,18 +61,25 @@ class _EditProfileState extends State<EditProfile> {
               children: [
                 CircleAvatar(
                   backgroundColor: Colors.grey,
-                  backgroundImage: NetworkImage(widget.profile.imageURL),
+                  backgroundImage: file == null
+                      ? NetworkImage(widget.profile.imageURL)
+                      : FileImage(file),
                   radius: 32,
                 ),
                 SizedBox(
                   width: 25.0,
                 ),
                 InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProfilePhoto()));
+                  onTap: () async {
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfilePhoto(),
+                      ),
+                    );
+                    setState(() {
+                      file = result as File;
+                    });
                   },
                   child: Text(
                     "FOTOĞRAF EKLE / DEĞİŞTİR",
@@ -63,7 +92,7 @@ class _EditProfileState extends State<EditProfile> {
               height: 50.0,
             ),
             TextFormField(
-              initialValue: widget.profile.firstName,
+              initialValue: widget.profile.firstName.toUpperCase(),
               autocorrect: true,
               decoration: InputDecoration(
                   labelText: "İSİM",
@@ -85,7 +114,7 @@ class _EditProfileState extends State<EditProfile> {
               height: 50.0,
             ),
             TextFormField(
-              initialValue: widget.profile.lastName,
+              initialValue: widget.profile.lastName.toUpperCase(),
               autocorrect: true,
               decoration: InputDecoration(
                   labelText: "SOYİSİM",
@@ -107,7 +136,7 @@ class _EditProfileState extends State<EditProfile> {
               height: 50.0,
             ),
             TextFormField(
-              initialValue: widget.profile.bio,
+              initialValue: widget.profile.bio.toUpperCase(),
               autocorrect: true,
               maxLength: 300,
               maxLines: 15,
@@ -151,12 +180,18 @@ class _EditProfileState extends State<EditProfile> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                SizedBox(
+                  height: 20.0,
+                ),
                 Icon(Icons.add_circle_outline),
                 SizedBox(
                   width: 15.0,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AddPeti()));
+                  },
                   child: Text(
                     "PETİ EKLE",
                     style: textPrimaryC,
@@ -225,9 +260,15 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  save() {
+  save() async {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
+      String profilePhotoUrl;
+      if (file == null) {
+        profilePhotoUrl = widget.profile.imageURL;
+      } else {
+        profilePhotoUrl = await StorageService().uploadProfilePhoto(file);
+      }
       String activeUserId =
           Provider.of<AuthorizationService>(context, listen: false)
               .activeUserId;
@@ -236,7 +277,9 @@ class _EditProfileState extends State<EditProfile> {
         firstName: firstName,
         lastName: lastName,
         bio: bio,
+        imageURL: profilePhotoUrl,
       );
     }
+    // Navigator.pop(context);
   }
 }

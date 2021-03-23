@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/petting.dart';
 import 'package:thepeti/models/user.dart';
 
@@ -41,13 +42,13 @@ class FireStoreService {
     String firstName,
     String lastName,
     String bio,
-    // String imageURL = "",
+    String imageURL = "",
   }) {
     firestore.collection("User").document(userId).updateData({
       "firstName": firstName,
       "lastName": lastName,
       "bio": bio,
-      // "imageURL": imageURL,
+      "imageURL": imageURL,
     });
   }
 
@@ -79,5 +80,30 @@ class FireStoreService {
         .map((doc) => Petting.createFromDocument(doc))
         .toList();
     return pettings;
+  }
+
+  Future<void> createPeti({imageURL = "", name, genus, ownerId}) async {
+    await firestore
+        .collection("Peti")
+        .document(ownerId)
+        .collection("UserPeti")
+        .add({
+      "imageURL": imageURL,
+      "name": name,
+      "genus": genus,
+      "ownerId": ownerId,
+      "createdDate": time,
+    });
+  }
+
+  Future<List<Peti>> getPeti(userId) async {
+    QuerySnapshot snapshot = await firestore
+        .collection("Peti")
+        .document(userId)
+        .collection("UserPeti")
+        .getDocuments();
+    List<Peti> petis =
+        snapshot.documents.map((doc) => Peti.createFromDocument(doc)).toList();
+    return petis;
   }
 }
