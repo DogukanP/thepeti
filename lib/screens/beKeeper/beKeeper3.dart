@@ -6,6 +6,7 @@ import 'package:thepeti/constants.dart';
 import 'package:thepeti/screens/homeScreen.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
+import 'package:thepeti/widgets/button.dart';
 
 // ignore: must_be_immutable
 class BeKeeper3 extends StatefulWidget {
@@ -75,20 +76,10 @@ class _BeKeeper3State extends State<BeKeeper3> {
                         SizedBox(
                           height: 90.0,
                         ),
-                        Container(
-                          height: 60,
-                          width: 400,
-                          child: ElevatedButton(
-                            child: Text("İLAN VER"),
-                            onPressed: () => finish(),
-                            style: ElevatedButton.styleFrom(
-                              primary: primaryColor,
-                              onPrimary: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                              ),
-                            ),
-                          ),
+                        Button(
+                          buttonColor: primaryColor,
+                          buttonFunction: () => finish(),
+                          buttonText: "İLAN VER",
                         ),
                       ],
                     ),

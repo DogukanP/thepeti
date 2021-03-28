@@ -7,6 +7,7 @@ import 'package:thepeti/screens/profilePhoto.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
 import 'package:thepeti/services/storageService.dart';
+import 'package:thepeti/widgets/button.dart';
 
 class AddPeti extends StatefulWidget {
   @override
@@ -34,8 +35,9 @@ class _AddPetiState extends State<AddPeti> {
                     children: [
                       CircleAvatar(
                         backgroundColor: Colors.grey,
-                        backgroundImage:
-                            file == null ? NetworkImage("") : FileImage(file),
+                        backgroundImage: file == null
+                            ? AssetImage("assets/profile_photo.png")
+                            : FileImage(file),
                         radius: 50.0,
                       ),
                     ],
@@ -64,7 +66,6 @@ class _AddPetiState extends State<AddPeti> {
                     height: 40.0,
                   ),
                   TextFormField(
-                    autocorrect: true,
                     decoration: InputDecoration(
                         labelText: "İSİM",
                         labelStyle: inputText,
@@ -74,6 +75,8 @@ class _AddPetiState extends State<AddPeti> {
                         return "İSİM ALANI BOŞ BIRAKILAMAZ!";
                       } else if (value.trim().length < 2) {
                         return "İSİM 2 KARAKTERDEN AZ OLAMAZ!";
+                      } else if (value.length > 20) {
+                        return "İSİM 20 KARAKTERDEN FAZLA OLAMAZ!";
                       }
                       return null;
                     },
@@ -85,7 +88,6 @@ class _AddPetiState extends State<AddPeti> {
                     height: 35.0,
                   ),
                   TextFormField(
-                    autocorrect: true,
                     decoration: InputDecoration(
                         labelText: "CİNS",
                         labelStyle: inputText,
@@ -95,6 +97,8 @@ class _AddPetiState extends State<AddPeti> {
                         return "CİNS ALANI BOŞ BIRAKILAMAZ!";
                       } else if (value.trim().length < 2) {
                         return "CİNS 2 KARAKTERDEN AZ OLAMAZ!";
+                      } else if (value.length > 20) {
+                        return "CİNS 20 KARAKTERDEN FAZLA OLAMAZ!";
                       }
                       return null;
                     },
@@ -105,20 +109,10 @@ class _AddPetiState extends State<AddPeti> {
                   SizedBox(
                     height: 50,
                   ),
-                  Container(
-                    height: 60,
-                    width: 400,
-                    child: ElevatedButton(
-                      child: Text("KAYDET"),
-                      onPressed: () => createPeti(),
-                      style: ElevatedButton.styleFrom(
-                        primary: primaryColor,
-                        onPrimary: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                      ),
-                    ),
+                  Button(
+                    buttonColor: primaryColor,
+                    buttonFunction: () => createPeti(),
+                    buttonText: "KAYDET",
                   ),
                 ],
               ),
@@ -138,7 +132,8 @@ class _AddPetiState extends State<AddPeti> {
         });
         if (file != null) {
           image = await StorageService().uploadPetiPhoto(file);
-        }
+        } else
+          image = "";
         String activeUserId =
             Provider.of<AuthorizationService>(context, listen: false)
                 .activeUserId;
@@ -150,7 +145,7 @@ class _AddPetiState extends State<AddPeti> {
           file = null;
         });
       }
+      Navigator.pop(context);
     }
-    Navigator.pop(context);
   }
 }

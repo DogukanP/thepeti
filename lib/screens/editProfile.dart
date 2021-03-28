@@ -10,6 +10,8 @@ import 'package:thepeti/screens/profilePhoto.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
 import 'package:thepeti/services/storageService.dart';
+import 'package:thepeti/widgets/button.dart';
+import 'package:thepeti/widgets/petiCard.dart';
 
 class EditProfile extends StatefulWidget {
   final User profile;
@@ -23,7 +25,7 @@ class _EditProfileState extends State<EditProfile> {
   getPetis() async {
     String activeUserId =
         Provider.of<AuthorizationService>(context, listen: false).activeUserId;
-    List<Peti> petis = await FireStoreService().getPeti(activeUserId);
+    List<Peti> petis = await FireStoreService().getPetis(activeUserId);
     setState(() {
       petiList = petis;
     });
@@ -44,6 +46,8 @@ class _EditProfileState extends State<EditProfile> {
       body: ListView(
         children: [
           userInformation(),
+          peti(),
+          end(),
         ],
       ),
     );
@@ -51,7 +55,7 @@ class _EditProfileState extends State<EditProfile> {
 
   userInformation() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(25, 50, 25, 20),
+      padding: const EdgeInsets.fromLTRB(25, 50, 25, 0),
       child: Form(
         key: formKey,
         child: Column(
@@ -93,7 +97,6 @@ class _EditProfileState extends State<EditProfile> {
             ),
             TextFormField(
               initialValue: widget.profile.firstName.toUpperCase(),
-              autocorrect: true,
               decoration: InputDecoration(
                   labelText: "İSİM",
                   labelStyle: inputText,
@@ -174,90 +177,108 @@ class _EditProfileState extends State<EditProfile> {
               height: 1.3,
               color: Colors.grey[500],
             ),
-            SizedBox(
-              height: 50.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 20.0,
-                ),
-                Icon(Icons.add_circle_outline),
-                SizedBox(
-                  width: 15.0,
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AddPeti()));
-                  },
-                  child: Text(
-                    "PETİ EKLE",
-                    style: textPrimaryC,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 50.0,
-            ),
-            Container(
-              height: 1.3,
-              color: Colors.grey[500],
-            ),
-            SizedBox(
-              height: 50.0,
-            ),
-            InkWell(
-              onTap: () {},
-              child: Text(
-                "YARDIM",
-                style: textPrimaryC,
-              ),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            InkWell(
-              onTap: () {},
-              child: Text(
-                "S.S.S.",
-                style: textPrimaryC,
-              ),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            InkWell(
-              onTap: () {},
-              child: Text(
-                "ŞARTLAR VE ONAYLAR",
-                style: textPrimaryC,
-              ),
-            ),
-            SizedBox(
-              height: 50,
-            ),
-            Container(
-              height: 60,
-              width: 400,
-              child: ElevatedButton(
-                child: Text("KAYDET"),
-                onPressed: () => save(),
-                style: ElevatedButton.styleFrom(
-                  primary: primaryColor,
-                  onPrimary: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                ),
-              ),
-            ),
+            // SizedBox(
+            //   height: 50.0,
+            // ),
           ],
         ),
       ),
     );
+  }
+
+  end() {
+    return Padding(
+      padding:
+          EdgeInsets.only(top: 50.0, left: 25.0, right: 25.0, bottom: 50.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 20.0,
+              ),
+              Icon(Icons.add_circle_outline),
+              SizedBox(
+                width: 15.0,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AddPeti()));
+                },
+                child: Text(
+                  "PETİ EKLE",
+                  style: textPrimaryC,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 50.0,
+          ),
+          Container(
+            height: 1.3,
+            color: Colors.grey[500],
+          ),
+          SizedBox(
+            height: 50.0,
+          ),
+          InkWell(
+            onTap: () {},
+            child: Text(
+              "YARDIM",
+              style: textPrimaryC,
+            ),
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
+          InkWell(
+            onTap: () {},
+            child: Text(
+              "S.S.S.",
+              style: textPrimaryC,
+            ),
+          ),
+          SizedBox(
+            height: 20.0,
+          ),
+          InkWell(
+            onTap: () {},
+            child: Text(
+              "ŞARTLAR VE ONAYLAR",
+              style: textPrimaryC,
+            ),
+          ),
+          SizedBox(
+            height: 50,
+          ),
+          Button(
+            buttonColor: primaryColor,
+            buttonFunction: () => save(),
+            buttonText: "KAYDET",
+          ),
+        ],
+      ),
+    );
+  }
+
+  peti() {
+    if (petiList.length == 0) {
+      return SizedBox(height: 0.1);
+    } else {
+      return ListView.builder(
+        shrinkWrap: true,
+        primary: false,
+        itemCount: petiList.length,
+        itemBuilder: (context, index) {
+          return PetiCard(
+            peti: petiList[index],
+          );
+        },
+      );
+    }
   }
 
   save() async {
@@ -280,6 +301,6 @@ class _EditProfileState extends State<EditProfile> {
         imageURL: profilePhotoUrl,
       );
     }
-    // Navigator.pop(context);
+    Navigator.pop(context);
   }
 }

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
+import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/user.dart';
 import 'package:thepeti/screens/editProfile.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
+import 'package:thepeti/widgets/button.dart';
 import 'package:thepeti/widgets/calculateAge.dart';
+import 'package:thepeti/widgets/petiCardProfile.dart';
 
 class Profile extends StatefulWidget {
   final String profileOwnerId;
@@ -16,6 +19,22 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  List<Peti> petiList = [];
+  getPetis() async {
+    String activeUserId =
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
+    List<Peti> petis = await FireStoreService().getPetis(activeUserId);
+    setState(() {
+      petiList = petis;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPetis();
+  }
+
   User profileOwner;
   @override
   Widget build(BuildContext context) {
@@ -29,18 +48,21 @@ class _ProfileState extends State<Profile> {
         backgroundColor: Colors.white,
         actions: [
           IconButton(
-              icon: Icon(
-                Icons.settings,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => EditProfile(
-                              profile: profileOwner,
-                            )));
-              }),
+            icon: Icon(
+              Icons.settings,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditProfile(
+                    profile: profileOwner,
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
       body: FutureBuilder<Object>(
@@ -54,25 +76,17 @@ class _ProfileState extends State<Profile> {
             profileOwner = snapshot.data;
 
             return ListView(
+              // padding: EdgeInsets.only(bottom: 30.0),
               children: <Widget>[
                 detailProfile(snapshot.data),
-                SizedBox(
-                  height: 30.0,
-                ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  height: 60,
-                  width: 400,
-                  child: ElevatedButton(
-                    child: Text("ÇIKIŞ YAP"),
-                    onPressed: () => logout(),
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
-                      onPrimary: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                    ),
+                peti(),
+                Padding(
+                  padding: EdgeInsets.only(
+                      left: 25.0, right: 25.0, top: 50.0, bottom: 50.0),
+                  child: Button(
+                    buttonColor: Colors.red,
+                    buttonFunction: () => logout(),
+                    buttonText: "ÇIKIŞ YAP",
                   ),
                 ),
               ],
@@ -183,6 +197,21 @@ class _ProfileState extends State<Profile> {
         ],
       ),
     );
+  }
+
+  peti() {
+    if (petiList.length == 0) {
+      return SizedBox(height: 0.1);
+    } else {
+      return ListView.builder(
+        shrinkWrap: true,
+        primary: false,
+        itemCount: petiList.length,
+        itemBuilder: (context, index) {
+          return PetiCardProfile(peti: petiList[index]);
+        },
+      );
+    }
   }
 
   logout() {

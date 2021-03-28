@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/petting.dart';
 import 'package:thepeti/models/user.dart';
+import 'package:thepeti/services/storageService.dart';
 
 class FireStoreService {
   final Firestore firestore = Firestore.instance;
@@ -96,7 +97,7 @@ class FireStoreService {
     });
   }
 
-  Future<List<Peti>> getPeti(userId) async {
+  Future<List<Peti>> getPetis(userId) async {
     QuerySnapshot snapshot = await firestore
         .collection("Peti")
         .document(userId)
@@ -106,4 +107,53 @@ class FireStoreService {
         snapshot.documents.map((doc) => Peti.createFromDocument(doc)).toList();
     return petis;
   }
+
+  Future<Peti> getPeti(userId, petiId) async {
+    DocumentSnapshot doc = await firestore
+        .collection("Peti")
+        .document(userId)
+        .collection("UserPeti")
+        .document(petiId)
+        .get();
+    Peti peti = Peti.createFromDocument(doc);
+    return peti;
+  }
+
+  void editPeti({
+    String ownerId,
+    String name,
+    String genus,
+    String imageURL = "",
+    String petiId,
+  }) {
+    firestore
+        .collection("Peti")
+        .document(ownerId)
+        .collection("UserPeti")
+        .document(petiId)
+        .updateData({
+      "name": name,
+      "genus": genus,
+      "imageURL": imageURL,
+    });
+  }
+
+  // ignore: missing_return
+  Future<void> deletePeti({String activeUserId, Peti peti}) {
+    firestore
+        .collection("Peti")
+        .document(activeUserId)
+        .collection("UserPeti")
+        .document(peti.petiId)
+        .get()
+        .then((DocumentSnapshot doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+
+    StorageService().deletePetiPhoto(peti.imageURL);
+  }
 }
+
+// requestId , pettingId , petiId, userId, createdDate

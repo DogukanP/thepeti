@@ -24,4 +24,13 @@ class StorageService {
     String uploadPhotoUrl = await snapshot.ref.getDownloadURL();
     return uploadPhotoUrl;
   }
+
+  void deletePetiPhoto(String petiImageUrl) {
+    RegExp search = RegExp(r"peti_.+\.jpg");
+    var match = search.firstMatch(petiImageUrl);
+    String fileName = match[0];
+    if (fileName != null) {
+      storage.child("images/peti/$fileName").delete();
+    }
+  }
 }

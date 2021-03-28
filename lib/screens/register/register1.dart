@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/user.dart';
 import 'package:thepeti/screens/register/register2.dart';
+import 'package:thepeti/widgets/button.dart';
 // import 'package:thepeti/services/authorizationService.dart';
 
 class Register1 extends StatefulWidget {
@@ -104,20 +105,10 @@ class _Register1State extends State<Register1> {
                 SizedBox(
                   height: 90.0,
                 ),
-                Container(
-                  height: 60,
-                  width: 400,
-                  child: ElevatedButton(
-                    child: Text("DEVAM ET"),
-                    onPressed: () => next(),
-                    style: ElevatedButton.styleFrom(
-                      primary: primaryColor,
-                      onPrimary: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                    ),
-                  ),
+                Button(
+                  buttonColor: primaryColor,
+                  buttonFunction: () => next(),
+                  buttonText: "DEVAM ET",
                 ),
                 SizedBox(
                   height: 50.0,

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:thepeti/constants.dart';
+import 'package:thepeti/widgets/button.dart';
 
 class ProfilePhoto extends StatefulWidget {
   @override
@@ -22,22 +23,10 @@ class _ProfilePhotoState extends State<ProfilePhoto> {
               style: text50,
             ),
             SizedBox(height: 40),
-            Container(
-              height: 60,
-              width: 400,
-              child: ElevatedButton(
-                child: Text("FOTOĞRAF ÇEK"),
-                onPressed: () {
-                  takePhoto();
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: primaryColor,
-                  onPrimary: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                ),
-              ),
+            Button(
+              buttonColor: primaryColor,
+              buttonFunction: () => takePhoto(),
+              buttonText: "FOTOĞRAF ÇEK",
             ),
             SizedBox(height: 10),
             Container(

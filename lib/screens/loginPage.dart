@@ -6,6 +6,7 @@ import 'package:thepeti/screens/register/register1.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/models/user.dart';
 import 'package:thepeti/services/fireStoreService.dart';
+import 'package:thepeti/widgets/button.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -125,20 +126,10 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             height: 40.0,
           ),
-          Container(
-            height: 60,
-            width: 400,
-            child: ElevatedButton(
-              child: Text("GİRİŞ YAP"),
-              onPressed: () => login(),
-              style: ElevatedButton.styleFrom(
-                primary: primaryColor,
-                onPrimary: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-              ),
-            ),
+          Button(
+            buttonColor: primaryColor,
+            buttonFunction: () => login(),
+            buttonText: "GİRİŞ YAP",
           ),
           SizedBox(
             height: 10.0,
@@ -211,6 +202,9 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               )
             ],
+          ),
+          SizedBox(
+            height: 20.0,
           ),
         ],
       ),

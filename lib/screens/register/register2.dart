@@ -6,6 +6,7 @@ import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/user.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
+import 'package:thepeti/widgets/button.dart';
 import 'package:thepeti/widgets/calculateAge.dart';
 
 class Register2 extends StatefulWidget {
@@ -115,20 +116,10 @@ class _Register2State extends State<Register2> {
                       SizedBox(
                         height: 90.0,
                       ),
-                      Container(
-                        height: 60,
-                        width: 400,
-                        child: ElevatedButton(
-                          child: Text("KAYDOL"),
-                          onPressed: () => register(),
-                          style: ElevatedButton.styleFrom(
-                            primary: primaryColor,
-                            onPrimary: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                          ),
-                        ),
+                      Button(
+                        buttonColor: primaryColor,
+                        buttonFunction: () => register(),
+                        buttonText: "KAYDOL",
                       ),
                       SizedBox(
                         height: 50.0,

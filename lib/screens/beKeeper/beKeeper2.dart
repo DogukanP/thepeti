@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/screens/beKeeper/beKeeper3.dart';
+import 'package:thepeti/widgets/button.dart';
 
 // ignore: must_be_immutable
 class BeKeeper2 extends StatefulWidget {
@@ -77,20 +78,10 @@ class _BeKeeper2State extends State<BeKeeper2> {
                       SizedBox(
                         height: 90.0,
                       ),
-                      Container(
-                        height: 60,
-                        width: 400,
-                        child: ElevatedButton(
-                          child: Text("DEVAM ET"),
-                          onPressed: () => next(),
-                          style: ElevatedButton.styleFrom(
-                            primary: primaryColor,
-                            onPrimary: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30.0),
-                            ),
-                          ),
-                        ),
+                      Button(
+                        buttonColor: primaryColor,
+                        buttonFunction: () => next(),
+                        buttonText: "DEVAM ET",
                       ),
                     ],
                   ),
