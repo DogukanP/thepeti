@@ -14,14 +14,14 @@ class PettingScreen extends StatefulWidget {
 }
 
 class _PettingScreenState extends State<PettingScreen> {
-  List<Petting> pettinglist = [];
+  List<Petting> pettingList = [];
 
   getPettings() async {
     String activeUserId =
         Provider.of<AuthorizationService>(context, listen: false).activeUserId;
     List<Petting> pettings = await FireStoreService().getPetting(activeUserId);
     setState(() {
-      pettinglist = pettings;
+      pettingList = pettings;
     });
   }
 
@@ -68,9 +68,9 @@ class _PettingScreenState extends State<PettingScreen> {
         ],
       ),
       body: ListView.builder(
-        itemCount: pettinglist.length,
+        itemCount: pettingList.length,
         itemBuilder: (context, index) {
-          Petting petting = pettinglist[index];
+          Petting petting = pettingList[index];
           return FutureBuilder(
             future: FireStoreService().getUser(petting.userId),
             builder: (context, snapshot) {

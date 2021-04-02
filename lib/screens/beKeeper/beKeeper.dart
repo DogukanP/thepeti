@@ -157,10 +157,11 @@ class _BeKeeperState extends State<BeKeeper> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (BuildContext context) => BeKeeper2(
-                  pettingDate: pettingDate,
-                  price: price,
-                )),
+          builder: (BuildContext context) => BeKeeper2(
+            pettingDate: pettingDate,
+            price: price,
+          ),
+        ),
       );
     }
   }

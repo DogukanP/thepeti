@@ -125,11 +125,7 @@ class _EditPetiState extends State<EditPeti> {
                   ),
                   Button(
                     buttonColor: Colors.red,
-                    buttonFunction: () => FireStoreService().deletePeti(
-                        activeUserId: Provider.of<AuthorizationService>(context,
-                                listen: false)
-                            .activeUserId,
-                        peti: widget.peti),
+                    buttonFunction: () => delete(),
                     buttonText: "SİL",
                   ),
                 ],
@@ -161,5 +157,13 @@ class _EditPetiState extends State<EditPeti> {
           petiId: widget.peti.petiId);
     }
     Navigator.pop(context, true);
+  }
+
+  delete() {
+    FireStoreService().deletePeti(
+        activeUserId: Provider.of<AuthorizationService>(context, listen: false)
+            .activeUserId,
+        peti: widget.peti);
+    Navigator.pop(context);
   }
 }

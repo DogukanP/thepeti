@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
+import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/screens/profile.dart';
+import 'package:thepeti/screens/searchKeeper/searchKeeper2.dart';
 import 'package:thepeti/services/authorizationService.dart';
+import 'package:thepeti/services/fireStoreService.dart';
 import 'package:thepeti/widgets/button.dart';
 
 class SearchKeeper extends StatefulWidget {
@@ -13,10 +16,28 @@ class SearchKeeper extends StatefulWidget {
 
 class _SearchKeeperState extends State<SearchKeeper> {
   String city;
-  DateTime pettingDate;
+  DateTime requestDate;
   TextEditingController dateController = new TextEditingController();
   DateTime currentDate = DateTime.now();
   final formKey = GlobalKey<FormState>();
+  List<Peti> petiList = [];
+  int selected = 0;
+
+  getPetis() async {
+    String activeUserId =
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
+    List<Peti> petis = await FireStoreService().getPetis(activeUserId);
+    setState(() {
+      petiList = petis;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPetis();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +76,7 @@ class _SearchKeeperState extends State<SearchKeeper> {
         ],
       ),
       body: ListView(
-        padding: EdgeInsets.fromLTRB(20.0, 130.0, 20.0, 0),
+        padding: EdgeInsets.fromLTRB(20.0, 30.0, 20.0, 0),
         children: [
           Form(
             key: formKey,
@@ -84,11 +105,11 @@ class _SearchKeeperState extends State<SearchKeeper> {
                         },
                         onSaved: (String value) {
                           value = currentDate.toString();
-                          pettingDate = DateTime.parse(value);
+                          requestDate = DateTime.parse(value);
                         },
                       ),
                       SizedBox(
-                        height: 50.0,
+                        height: 40.0,
                       ),
                       TextFormField(
                         decoration: InputDecoration(
@@ -108,12 +129,39 @@ class _SearchKeeperState extends State<SearchKeeper> {
                         },
                       ),
                       SizedBox(
-                        height: 80.0,
+                        height: 50.0,
+                      ),
+                      Text(
+                        "PETİNİ SEÇ",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontFamily: "Montserrat",
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15.0,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      Divider(
+                        height: 25.0,
+                        color: Colors.grey[850],
+                      ),
+                      SizedBox(
+                        height: 20.0,
+                      ),
+                      radio(),
+                      SizedBox(
+                        height: 50.0,
                       ),
                       Button(
                         buttonColor: primaryColor,
                         buttonFunction: () => next(),
                         buttonText: "ARA",
+                      ),
+                      SizedBox(
+                        height: 50.0,
                       ),
                     ],
                   ),
@@ -152,5 +200,66 @@ class _SearchKeeperState extends State<SearchKeeper> {
     }
   }
 
-  next() {}
+  radio() {
+    return Column(
+      children: [
+        for (int i = 0; i < petiList.length; i++)
+          Row(
+            children: [
+              Radio(
+                value: i,
+                groupValue: selected,
+                activeColor: primaryColor,
+                onChanged: (val) {
+                  setState(() {
+                    selected = val;
+                  });
+                },
+              ),
+              SizedBox(
+                width: 30.0,
+              ),
+              CircleAvatar(
+                radius: 28.0,
+                backgroundColor: Colors.grey,
+                backgroundImage: petiList[i].imageURL.isNotEmpty
+                    ? NetworkImage(petiList[i].imageURL)
+                    : AssetImage("assets/profile_photo.png"),
+              ),
+              SizedBox(
+                width: 30.0,
+              ),
+              Text(
+                petiList[i].name,
+                style: text18,
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  next() async {
+    if (formKey.currentState.validate()) {
+      formKey.currentState.save();
+      if (petiList.length < 1) {
+        final snackBar = SnackBar(
+          content: Text("BU İŞLEM İÇİN BİR PETİN OLMALI"),
+          backgroundColor: primaryColor,
+        );
+        Scaffold.of(context).showSnackBar(snackBar);
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (BuildContext context) => SearchKeeper2(
+              city: city,
+              requestDate: requestDate,
+              petiId: petiList[selected].petiId,
+            ),
+          ),
+        );
+      }
+    }
+  }
 }

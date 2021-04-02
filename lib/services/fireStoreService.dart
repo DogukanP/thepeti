@@ -53,13 +53,25 @@ class FireStoreService {
     });
   }
 
+  // Future<void> createPetting(
+  //     {userId, pettingDate, price, city, district, note}) async {
+  //   await firestore
+  //       .collection("Petting")
+  //       .document(userId)
+  //       .collection("UserPetting")
+  //       .add({
+  //     "userId": userId,
+  //     "price": price,
+  //     "city": city,
+  //     "district": district,
+  //     "pettingDate": pettingDate,
+  //     "note": note,
+  //     "createdDate": time,
+  //   });
+  // }
   Future<void> createPetting(
       {userId, pettingDate, price, city, district, note}) async {
-    await firestore
-        .collection("Petting")
-        .document(userId)
-        .collection("UserPetting")
-        .add({
+    await firestore.collection("Petting").add({
       "userId": userId,
       "price": price,
       "city": city,
@@ -70,11 +82,23 @@ class FireStoreService {
     });
   }
 
+  // Future<List<Petting>> getPetting(userId) async {
+  //   QuerySnapshot snapshot = await firestore
+  //       .collection("Petting")
+  //       .document(userId)
+  //       .collection("UserPetting")
+  //       .orderBy("pettingDate", descending: false)
+  //       .getDocuments();
+  //   List<Petting> pettings = snapshot.documents
+  //       .map((doc) => Petting.createFromDocument(doc))
+  //       .toList();
+  //   return pettings;
+  // }
+  //
   Future<List<Petting>> getPetting(userId) async {
     QuerySnapshot snapshot = await firestore
         .collection("Petting")
-        .document(userId)
-        .collection("UserPetting")
+        .where("userId", isEqualTo: userId)
         .orderBy("pettingDate", descending: false)
         .getDocuments();
     List<Petting> pettings = snapshot.documents
@@ -82,6 +106,18 @@ class FireStoreService {
         .toList();
     return pettings;
   }
+
+  // Future<List<Petting>> getPettingsForSearchKeeper(city) async {
+  //   QuerySnapshot snapshot = await firestore
+  //       .collection("Petting")
+  //       .where("city", isEqualTo: city)
+  //       .where("price", isEqualTo: "35")
+  //       .getDocuments();
+  //   List<Petting> pettings = snapshot.documents
+  //       .map((doc) => Petting.createFromDocument(doc))
+  //       .toList();
+  //   return pettings;
+  // }
 
   Future<void> createPeti({imageURL = "", name, genus, ownerId}) async {
     await firestore
