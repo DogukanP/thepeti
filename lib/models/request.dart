@@ -1,28 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Request {
-  int id;
-  int pettingId;
-  int petiId;
-  String createdDate;
-  String imageURL;
+  String requestId;
+  String petiId;
+  String userId;
 
-  Request(
-      {this.id, this.pettingId, this.petiId, this.createdDate, this.imageURL});
+  Request({this.requestId, this.petiId, this.userId});
 
-  Request.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    pettingId = json['pettingId'];
-    petiId = json['petiId'];
-    createdDate = json['createdDate'];
-    imageURL = json['imageURL'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['pettingId'] = this.pettingId;
-    data['petiId'] = this.petiId;
-    data['createdDate'] = this.createdDate;
-    data['imageURL'] = this.imageURL;
-    return data;
+  factory Request.createFromDocument(DocumentSnapshot doc) {
+    var docData = doc.data;
+    return Request(
+      requestId: doc.documentID,
+      petiId: docData["petiId"],
+      userId: docData["userId"],
+    );
   }
 }

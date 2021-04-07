@@ -180,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               Text(
                 "BİR HESABIN YOK MU ?",
-                style: textBlackC,
+                style: textBlackC18,
               ),
               SizedBox(
                 width: 5.0,

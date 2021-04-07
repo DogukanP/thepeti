@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/models/user.dart';
-import 'package:thepeti/screens/homeScreen.dart';
+import 'package:thepeti/screens/homeScreens/homeScreen.dart';
 import 'package:thepeti/screens/loginPage.dart';
 import 'package:thepeti/services/authorizationService.dart';
 

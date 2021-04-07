@@ -19,4 +19,24 @@ class Peti {
       imageURL: docData["imageURL"],
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "ownerId": ownerId,
+      "name": name,
+      "genus": genus,
+      "imageURL": imageURL
+    };
+  }
+
+  Peti.fromMap(Map<String, dynamic> map)
+      : ownerId = map["ownerId"],
+        name = map["name"],
+        genus = map["genus"],
+        imageURL = map["imageURL"];
+
+  @override
+  String toString() {
+    return 'Peti{ownerId : $ownerId,"name" $name, "genus" $genus, "imageURL" $imageURL}';
+  }
 }

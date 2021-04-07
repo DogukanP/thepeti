@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/screens/profilePhoto.dart';
-import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
 import 'package:thepeti/services/storageService.dart';
 import 'package:thepeti/widgets/button.dart';
@@ -146,11 +144,7 @@ class _EditPetiState extends State<EditPeti> {
       } else {
         profilePhotoUrl = await StorageService().uploadPetiPhoto(file);
       }
-      String activeUserId =
-          Provider.of<AuthorizationService>(context, listen: false)
-              .activeUserId;
       FireStoreService().editPeti(
-          ownerId: activeUserId,
           name: name,
           genus: genus,
           imageURL: profilePhotoUrl,
@@ -160,10 +154,7 @@ class _EditPetiState extends State<EditPeti> {
   }
 
   delete() {
-    FireStoreService().deletePeti(
-        activeUserId: Provider.of<AuthorizationService>(context, listen: false)
-            .activeUserId,
-        peti: widget.peti);
+    FireStoreService().deletePeti(peti: widget.peti);
     Navigator.pop(context);
   }
 }

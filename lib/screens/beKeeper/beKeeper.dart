@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/screens/beKeeper/beKeeper2.dart';
-import 'package:thepeti/screens/profile.dart';
+import 'package:thepeti/screens/profile/profile.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/widgets/button.dart';
 

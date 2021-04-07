@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/petting.dart';
+import 'package:thepeti/models/request.dart';
 import 'package:thepeti/models/user.dart';
 import 'package:thepeti/services/storageService.dart';
 
@@ -53,22 +54,6 @@ class FireStoreService {
     });
   }
 
-  // Future<void> createPetting(
-  //     {userId, pettingDate, price, city, district, note}) async {
-  //   await firestore
-  //       .collection("Petting")
-  //       .document(userId)
-  //       .collection("UserPetting")
-  //       .add({
-  //     "userId": userId,
-  //     "price": price,
-  //     "city": city,
-  //     "district": district,
-  //     "pettingDate": pettingDate,
-  //     "note": note,
-  //     "createdDate": time,
-  //   });
-  // }
   Future<void> createPetting(
       {userId, pettingDate, price, city, district, note}) async {
     await firestore.collection("Petting").add({
@@ -82,19 +67,6 @@ class FireStoreService {
     });
   }
 
-  // Future<List<Petting>> getPetting(userId) async {
-  //   QuerySnapshot snapshot = await firestore
-  //       .collection("Petting")
-  //       .document(userId)
-  //       .collection("UserPetting")
-  //       .orderBy("pettingDate", descending: false)
-  //       .getDocuments();
-  //   List<Petting> pettings = snapshot.documents
-  //       .map((doc) => Petting.createFromDocument(doc))
-  //       .toList();
-  //   return pettings;
-  // }
-  //
   Future<List<Petting>> getPetting(userId) async {
     QuerySnapshot snapshot = await firestore
         .collection("Petting")
@@ -107,24 +79,21 @@ class FireStoreService {
     return pettings;
   }
 
-  // Future<List<Petting>> getPettingsForSearchKeeper(city) async {
-  //   QuerySnapshot snapshot = await firestore
-  //       .collection("Petting")
-  //       .where("city", isEqualTo: city)
-  //       .where("price", isEqualTo: "35")
-  //       .getDocuments();
-  //   List<Petting> pettings = snapshot.documents
-  //       .map((doc) => Petting.createFromDocument(doc))
-  //       .toList();
-  //   return pettings;
-  // }
+  Future<List<Petting>> getPettingforSearch(city, timestamp) async {
+    QuerySnapshot snapshot = await firestore
+        .collection("Petting")
+        .where("city", isEqualTo: city)
+        .where("pettingDate", isEqualTo: timestamp)
+        .orderBy("price")
+        .getDocuments();
+    List<Petting> pettings = snapshot.documents
+        .map((doc) => Petting.createFromDocument(doc))
+        .toList();
+    return pettings;
+  }
 
   Future<void> createPeti({imageURL = "", name, genus, ownerId}) async {
-    await firestore
-        .collection("Peti")
-        .document(ownerId)
-        .collection("UserPeti")
-        .add({
+    await firestore.collection("Peti").add({
       "imageURL": imageURL,
       "name": name,
       "genus": genus,
@@ -136,50 +105,36 @@ class FireStoreService {
   Future<List<Peti>> getPetis(userId) async {
     QuerySnapshot snapshot = await firestore
         .collection("Peti")
-        .document(userId)
-        .collection("UserPeti")
+        .where("ownerId", isEqualTo: userId)
         .getDocuments();
     List<Peti> petis =
         snapshot.documents.map((doc) => Peti.createFromDocument(doc)).toList();
     return petis;
   }
 
-  Future<Peti> getPeti(userId, petiId) async {
-    DocumentSnapshot doc = await firestore
-        .collection("Peti")
-        .document(userId)
-        .collection("UserPeti")
-        .document(petiId)
-        .get();
+  Future<Peti> getPeti(petiId) async {
+    DocumentSnapshot doc =
+        await firestore.collection("Peti").document(petiId).get();
     Peti peti = Peti.createFromDocument(doc);
     return peti;
   }
 
   void editPeti({
-    String ownerId,
     String name,
     String genus,
     String imageURL = "",
     String petiId,
   }) {
-    firestore
-        .collection("Peti")
-        .document(ownerId)
-        .collection("UserPeti")
-        .document(petiId)
-        .updateData({
+    firestore.collection("Peti").document(petiId).updateData({
       "name": name,
       "genus": genus,
       "imageURL": imageURL,
     });
   }
 
-  // ignore: missing_return
-  Future<void> deletePeti({String activeUserId, Peti peti}) {
+  void deletePeti({Peti peti}) {
     firestore
         .collection("Peti")
-        .document(activeUserId)
-        .collection("UserPeti")
         .document(peti.petiId)
         .get()
         .then((DocumentSnapshot doc) {
@@ -190,6 +145,44 @@ class FireStoreService {
 
     StorageService().deletePetiPhoto(peti.imageURL);
   }
+
+  Future<void> createRequest({userId, pettingId, petiId}) async {
+    await firestore
+        .collection("Petting")
+        .document(pettingId)
+        .collection("Request")
+        .add({
+      "ownerId": userId,
+      "petiId": petiId,
+      "pettingId": pettingId,
+    });
+  }
+
+  getRequest(pettingId, activeUserId) async {
+    QuerySnapshot snapshot = await firestore
+        .collection("Petting")
+        .document(pettingId)
+        .collection("Request")
+        .where("ownerId", isEqualTo: activeUserId)
+        .getDocuments();
+    List<Request> request =
+        snapshot.documents.map((e) => Request.createFromDocument(e)).toList();
+    return request;
+  }
 }
 
-// requestId , pettingId , petiId, userId, createdDate
+/*
+
+
+getRequest() async {
+    String activeUserId =
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
+    List<Request> request = await FireStoreService()
+        .getRequest("JSdDdIiQ3zx1Ee65GaiP", activeUserId);
+    setState(() {
+      requestList = request;
+    });
+  }
+
+
+*/

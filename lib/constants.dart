@@ -14,6 +14,8 @@ const text40 = TextStyle(
     fontSize: 40.0, fontWeight: FontWeight.bold, fontFamily: "Montserrat");
 const text30 = TextStyle(
     fontSize: 30.0, fontWeight: FontWeight.bold, fontFamily: "Montserrat");
+const text23 = TextStyle(
+    fontSize: 23.0, fontWeight: FontWeight.bold, fontFamily: "Montserrat");
 const text18 = TextStyle(
     fontSize: 18.0, fontWeight: FontWeight.bold, fontFamily: "Montserrat");
 const inputText = TextStyle(
@@ -31,6 +33,13 @@ const textBlackC = TextStyle(
   color: Colors.black,
   fontWeight: FontWeight.bold,
   fontFamily: "Montserrat",
+  fontSize: 25,
+);
+const textBlackC18 = TextStyle(
+  color: Colors.black,
+  fontWeight: FontWeight.bold,
+  fontFamily: "Montserrat",
+  // fontSize: 18,
 );
 
 // String activeUserId =

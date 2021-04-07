@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/user.dart';
-import 'package:thepeti/screens/addPeti.dart';
+import 'package:thepeti/screens/peti/addPeti.dart';
 import 'package:thepeti/screens/profilePhoto.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';

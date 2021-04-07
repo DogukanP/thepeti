@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/peti.dart';
-import 'package:thepeti/screens/profile.dart';
+import 'package:thepeti/screens/profile/profile.dart';
 import 'package:thepeti/screens/searchKeeper/searchKeeper2.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
@@ -146,7 +146,8 @@ class _SearchKeeperState extends State<SearchKeeper> {
                       ),
                       Divider(
                         height: 25.0,
-                        color: Colors.grey[850],
+                        color: Colors.grey[600],
+                        thickness: 1.0,
                       ),
                       SizedBox(
                         height: 20.0,
@@ -204,36 +205,39 @@ class _SearchKeeperState extends State<SearchKeeper> {
     return Column(
       children: [
         for (int i = 0; i < petiList.length; i++)
-          Row(
-            children: [
-              Radio(
-                value: i,
-                groupValue: selected,
-                activeColor: primaryColor,
-                onChanged: (val) {
-                  setState(() {
-                    selected = val;
-                  });
-                },
-              ),
-              SizedBox(
-                width: 30.0,
-              ),
-              CircleAvatar(
-                radius: 28.0,
-                backgroundColor: Colors.grey,
-                backgroundImage: petiList[i].imageURL.isNotEmpty
-                    ? NetworkImage(petiList[i].imageURL)
-                    : AssetImage("assets/profile_photo.png"),
-              ),
-              SizedBox(
-                width: 30.0,
-              ),
-              Text(
-                petiList[i].name,
-                style: text18,
-              ),
-            ],
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Row(
+              children: [
+                Radio(
+                  value: i,
+                  groupValue: selected,
+                  activeColor: primaryColor,
+                  onChanged: (val) {
+                    setState(() {
+                      selected = val;
+                    });
+                  },
+                ),
+                SizedBox(
+                  width: 30.0,
+                ),
+                CircleAvatar(
+                  radius: 28.0,
+                  backgroundColor: Colors.grey,
+                  backgroundImage: petiList[i].imageURL.isNotEmpty
+                      ? NetworkImage(petiList[i].imageURL)
+                      : AssetImage("assets/profile_photo.png"),
+                ),
+                SizedBox(
+                  width: 30.0,
+                ),
+                Text(
+                  petiList[i].name,
+                  style: text18,
+                ),
+              ],
+            ),
           ),
       ],
     );
@@ -255,7 +259,7 @@ class _SearchKeeperState extends State<SearchKeeper> {
             builder: (BuildContext context) => SearchKeeper2(
               city: city,
               requestDate: requestDate,
-              petiId: petiList[selected].petiId,
+              peti: petiList[selected],
             ),
           ),
         );

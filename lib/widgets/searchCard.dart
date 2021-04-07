@@ -1,40 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
+import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/petting.dart';
 import 'package:thepeti/models/user.dart';
-import 'package:thepeti/screens/myPetting.dart';
-import 'package:thepeti/services/authorizationService.dart';
+import 'package:thepeti/screens/searchKeeper/searchDetail.dart';
 
-class PettingCard extends StatefulWidget {
+class SearchCard extends StatefulWidget {
   final Petting petting;
   final User user;
+  final Peti peti;
 
-  const PettingCard({Key key, this.petting, this.user}) : super(key: key);
+  const SearchCard({Key key, this.petting, this.user, this.peti})
+      : super(key: key);
   @override
-  _PettingCardState createState() => _PettingCardState();
+  _SearchCardState createState() => _SearchCardState();
 }
 
-class _PettingCardState extends State<PettingCard> {
-  DateFormat formatter = DateFormat('dd/MM/yyyy');
+class _SearchCardState extends State<SearchCard> {
   @override
   Widget build(BuildContext context) {
-    String activeUserId =
-        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
     return GestureDetector(
       onTap: () {
-        if (activeUserId == widget.petting.userId) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (BuildContext context) => MyPetting(
-                petting: widget.petting,
-                user: widget.user,
-              ),
-            ),
-          );
-        } else {}
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SearchDetail(
+                user: widget.user, petting: widget.petting, peti: widget.peti),
+          ),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
@@ -56,37 +49,22 @@ class _PettingCardState extends State<PettingCard> {
                 ],
               ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "ONAY BEKLENİYOR",
-                        style: textPrimaryC,
-                      )
-                    ],
-                  ),
                   Row(
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            formatter
-                                .format(widget.petting.pettingDate.toDate())
-                                .toString(),
-                            style: text30,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
                           Row(
                             children: [
                               CircleAvatar(
+                                radius: 30,
                                 backgroundColor: Colors.grey,
                                 backgroundImage: widget.user.imageURL.isNotEmpty
                                     ? NetworkImage(widget.user.imageURL)
-                                    : AssetImage("assets/profile_photo.png"),
+                                    // : AssetImage("assets/profile_photo.png"),
+                                    : null,
                               ),
                               SizedBox(
                                 width: 10,
@@ -96,10 +74,20 @@ class _PettingCardState extends State<PettingCard> {
                                     .split(" ")[0]
                                     .toString()
                                     .toUpperCase(),
-                                style: text18,
+                                style: text23,
                               ),
                             ],
-                          )
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10.0),
+                            child: Text(
+                              widget.petting.district,
+                              style: text23,
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(

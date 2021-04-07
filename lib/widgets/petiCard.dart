@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/peti.dart';
-import 'package:thepeti/screens/editPeti.dart';
+import 'package:thepeti/screens/peti/editPeti.dart';
 
 class PetiCard extends StatefulWidget {
   final Peti peti;

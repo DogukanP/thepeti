@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/user.dart';
-import 'package:thepeti/screens/editProfile.dart';
+import 'package:thepeti/screens/profile/editProfile.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
 import 'package:thepeti/widgets/button.dart';
@@ -19,11 +19,11 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  bool active;
+
   List<Peti> petiList = [];
   getPetis() async {
-    String activeUserId =
-        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
-    List<Peti> petis = await FireStoreService().getPetis(activeUserId);
+    List<Peti> petis = await FireStoreService().getPetis(widget.profileOwnerId);
     setState(() {
       petiList = petis;
     });
@@ -38,6 +38,9 @@ class _ProfileState extends State<Profile> {
   User profileOwner;
   @override
   Widget build(BuildContext context) {
+    String activeUserId =
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
+    activeUserId == widget.profileOwnerId ? active = true : active = false;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -47,21 +50,27 @@ class _ProfileState extends State<Profile> {
         centerTitle: true,
         backgroundColor: Colors.white,
         actions: [
-          IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Colors.black,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditProfile(
-                    profile: profileOwner,
+          Center(
+            child: active == true
+                ? IconButton(
+                    icon: Icon(
+                      Icons.settings,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditProfile(
+                            profile: profileOwner,
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                : SizedBox(
+                    height: 0.0,
                   ),
-                ),
-              );
-            },
           ),
         ],
       ),
@@ -76,18 +85,29 @@ class _ProfileState extends State<Profile> {
             profileOwner = snapshot.data;
 
             return ListView(
-              // padding: EdgeInsets.only(bottom: 30.0),
               children: <Widget>[
                 detailProfile(snapshot.data),
                 peti(),
-                Padding(
-                  padding: EdgeInsets.only(
-                      left: 25.0, right: 25.0, top: 50.0, bottom: 50.0),
-                  child: Button(
-                    buttonColor: Colors.red,
-                    buttonFunction: () => logout(),
-                    buttonText: "ÇIKIŞ YAP",
-                  ),
+                Center(
+                  child: active == true
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 50.0, bottom: 50.0),
+                          child: Button(
+                            buttonColor: Colors.red,
+                            buttonFunction: () => logout(),
+                            buttonText: "ÇIKIŞ YAP",
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(
+                              left: 25.0, right: 25.0, top: 50.0, bottom: 50.0),
+                          child: Button(
+                            buttonColor: Colors.red,
+                            buttonFunction: () => null, //complain
+                            buttonText: "ŞİKAYET ET",
+                          ),
+                        ),
                 ),
               ],
             );
@@ -152,16 +172,43 @@ class _ProfileState extends State<Profile> {
               ),
             ],
           ),
+          Center(
+            child: active == true
+                ? SizedBox(
+                    height: 30.0,
+                  )
+                : Padding(
+                    padding: EdgeInsets.only(top: 30.0),
+                    child: Column(
+                      children: [
+                        Divider(
+                          thickness: 3.0,
+                          color: Colors.grey[500],
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: Text(
+                            "MESAJ GÖNDER",
+                            style: textPrimaryC,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+          ),
           Container(
             child: (profileData.bio != "")
                 ? Column(
                     children: [
                       SizedBox(
-                        height: 50.0,
+                        height: 20.0,
                       ),
-                      Container(
-                        height: 3.5,
-                        color: Colors.grey,
+                      Divider(
+                        thickness: 3.0,
+                        color: Colors.grey[500],
                       ),
                     ],
                   )
@@ -188,9 +235,9 @@ class _ProfileState extends State<Profile> {
               SizedBox(
                 height: 35.0,
               ),
-              Container(
-                height: 3.5,
-                color: Colors.grey,
+              Divider(
+                thickness: 3.0,
+                color: Colors.grey[500],
               ),
             ],
           )
@@ -216,5 +263,6 @@ class _ProfileState extends State<Profile> {
 
   logout() {
     Provider.of<AuthorizationService>(context, listen: false).logOut();
+    Navigator.pop(context);
   }
 }

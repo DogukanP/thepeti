@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/screens/beKeeper/beKeeper.dart';
-import 'package:thepeti/screens/pettingScreen.dart';
+import 'package:thepeti/screens/homeScreens/pettingScreen.dart';
 import 'package:thepeti/screens/searchKeeper/searchKeeper.dart';
 
 class HomeScreen extends StatefulWidget {

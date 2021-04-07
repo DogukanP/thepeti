@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
-import 'package:thepeti/screens/homeScreen.dart';
+import 'package:thepeti/screens/homeScreens/homeScreen.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
 import 'package:thepeti/widgets/button.dart';
