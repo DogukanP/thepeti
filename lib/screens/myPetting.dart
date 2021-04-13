@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/petting.dart';
+import 'package:thepeti/models/request.dart';
 import 'package:thepeti/models/user.dart';
-import 'package:thepeti/widgets/button.dart';
+import 'package:thepeti/screens/searchKeeper/searchDetail.dart';
+import 'package:thepeti/services/fireStoreService.dart';
+import 'package:thepeti/widgets/confirmReqCard.dart';
+import 'package:thepeti/widgets/pettingRequestCard.dart';
 
 class MyPetting extends StatefulWidget {
   final Petting petting;
@@ -39,7 +44,7 @@ class _MyPettingState extends State<MyPetting> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "PETTING ÜCRETİ : " + widget.petting.price.toString(),
+                    "PETTING ÜCRETİ : ${widget.petting.price} TL",
                     style: text30,
                   )
                 ],
@@ -56,14 +61,15 @@ class _MyPettingState extends State<MyPetting> {
               ),
               InkWell(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => Register1(
-                  //       user: newUser,
-                  //     ),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => SearchDetail(
+                        petting: widget.petting,
+                        user: widget.user,
+                      ),
+                    ),
+                  );
                 },
                 child: Text(
                   "İLANI GÖRÜNTÜLE",
@@ -71,13 +77,9 @@ class _MyPettingState extends State<MyPetting> {
                 ),
               ),
               SizedBox(
-                height: 25.0,
+                height: 15.0,
               ),
-              Button(
-                buttonColor: primaryColor,
-                buttonText: "İLANI DÜZENLE",
-                buttonFunction: () => null,
-              ),
+              getConfirmReq(widget.petting.pettingId),
               SizedBox(
                 height: 50.0,
               ),
@@ -97,10 +99,62 @@ class _MyPettingState extends State<MyPetting> {
                 color: Colors.grey[500],
                 thickness: 3.0,
               ),
+              SizedBox(
+                height: 20.0,
+              ),
+              getNotConfirmReq(widget.petting.pettingId),
             ],
           )
         ],
       ),
+    );
+  }
+
+  getConfirmReq(pettingId) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FireStoreService().getConfirmRequest(pettingId),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return SizedBox(
+            height: 0.0,
+          );
+        }
+        return ListView.builder(
+            shrinkWrap: true,
+            primary: false,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              Request req =
+                  Request.createFromDocument(snapshot.data.documents[index]);
+              return ConfirmReqCard(
+                request: req,
+              );
+            });
+      },
+    );
+  }
+
+  getNotConfirmReq(pettingId) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FireStoreService().getNotConfirmRequest(pettingId),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return SizedBox(
+            height: 0.0,
+          );
+        }
+        return ListView.builder(
+            shrinkWrap: true,
+            primary: false,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              Request req =
+                  Request.createFromDocument(snapshot.data.documents[index]);
+              return PettingRequestCard(
+                request: req,
+              );
+            });
+      },
     );
   }
 }

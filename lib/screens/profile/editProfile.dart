@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
@@ -21,22 +22,6 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-  List<Peti> petiList = [];
-  getPetis() async {
-    String activeUserId =
-        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
-    List<Peti> petis = await FireStoreService().getPetis(activeUserId);
-    setState(() {
-      petiList = petis;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getPetis();
-  }
-
   File file;
   var formKey = GlobalKey<FormState>();
   String firstName, lastName, bio;
@@ -46,7 +31,7 @@ class _EditProfileState extends State<EditProfile> {
       body: ListView(
         children: [
           userInformation(),
-          peti(),
+          petis(),
           end(),
         ],
       ),
@@ -177,9 +162,6 @@ class _EditProfileState extends State<EditProfile> {
               height: 1.3,
               color: Colors.grey[500],
             ),
-            // SizedBox(
-            //   height: 50.0,
-            // ),
           ],
         ),
       ),
@@ -264,21 +246,26 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  peti() {
-    if (petiList.length == 0) {
-      return SizedBox(height: 0.1);
-    } else {
-      return ListView.builder(
-        shrinkWrap: true,
-        primary: false,
-        itemCount: petiList.length,
-        itemBuilder: (context, index) {
-          return PetiCard(
-            peti: petiList[index],
-          );
-        },
-      );
-    }
+  petis() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FireStoreService().getPetisLive(widget.profile.userId),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Text("data yok");
+        }
+        return ListView.builder(
+          shrinkWrap: true,
+          primary: false,
+          itemCount: snapshot.data.documents.length,
+          itemBuilder: (context, index) {
+            Peti peti = Peti.createFromDocument(snapshot.data.documents[index]);
+            return PetiCard(
+              peti: peti,
+            );
+          },
+        );
+      },
+    );
   }
 
   save() async {

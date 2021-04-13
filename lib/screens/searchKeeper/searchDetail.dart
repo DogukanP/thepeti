@@ -25,9 +25,31 @@ class SearchDetail extends StatefulWidget {
 
 class _SearchDetailState extends State<SearchDetail> {
   bool loading = false;
+  bool active;
+  bool isThere = false;
   DateFormat formatter = DateFormat('dd/MM/yyyy');
+
+  reqControl() async {
+    bool isThereReq = await FireStoreService().reqControl(
+        widget.petting.pettingId,
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId);
+    setState(() {
+      isThere = isThereReq;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    reqControl();
+  }
+
   @override
   Widget build(BuildContext context) {
+    String activeUserId =
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
+    activeUserId == widget.user.userId ? active = true : active = false;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -133,11 +155,26 @@ class _SearchDetailState extends State<SearchDetail> {
           SizedBox(
             height: 50.0,
           ),
-          Button(
-            buttonColor: primaryColor,
-            buttonFunction: () => createRequest(),
-            buttonText: "İSTEK GÖNDER",
-          ),
+          active == false
+              ? Center(
+                  child: isThere == false
+                      ? Button(
+                          buttonColor: primaryColor,
+                          buttonFunction: () => createRequest(),
+                          buttonText: "İSTEK GÖNDER",
+                        )
+                      : Button(
+                          buttonColor: Colors.red,
+                          buttonFunction: () =>
+                              deleteReq(widget.petting.pettingId, activeUserId),
+                          buttonText: "İPTAL ET",
+                        ),
+                )
+              : Button(
+                  buttonColor: Colors.red,
+                  buttonFunction: () => cancel(widget.petting.pettingId),
+                  buttonText: "İPTAL ET",
+                ),
           SizedBox(
             height: 10.0,
           ),
@@ -168,6 +205,9 @@ class _SearchDetailState extends State<SearchDetail> {
 
       setState(() {
         loading = false;
+        setState(() {
+          isThere = true;
+        });
       });
 
       Navigator.pushAndRemoveUntil(
@@ -175,5 +215,25 @@ class _SearchDetailState extends State<SearchDetail> {
           MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
           (Route<dynamic> route) => route is HomeScreen);
     }
+  }
+
+  cancel(String pettingId) {
+    FireStoreService().deletePetting(pettingId);
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
+        (Route<dynamic> route) => route is HomeScreen);
+  }
+
+  deleteReq(pettingId, ownerId) {
+    FireStoreService().deleteRequestNoReqId(pettingId, ownerId);
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
+        (Route<dynamic> route) => route is HomeScreen);
+
+    setState(() {
+      isThere = true;
+    });
   }
 }

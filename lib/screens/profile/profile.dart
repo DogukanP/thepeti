@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
@@ -19,22 +20,8 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  GlobalKey<FormState> formkey = GlobalKey();
   bool active;
-
-  List<Peti> petiList = [];
-  getPetis() async {
-    List<Peti> petis = await FireStoreService().getPetis(widget.profileOwnerId);
-    setState(() {
-      petiList = petis;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getPetis();
-  }
-
   User profileOwner;
   @override
   Widget build(BuildContext context) {
@@ -104,7 +91,8 @@ class _ProfileState extends State<Profile> {
                               left: 25.0, right: 25.0, top: 50.0, bottom: 50.0),
                           child: Button(
                             buttonColor: Colors.red,
-                            buttonFunction: () => null, //complain
+                            buttonFunction: () => complaint(
+                                activeUserId, widget.profileOwnerId), //complain
                             buttonText: "ŞİKAYET ET",
                           ),
                         ),
@@ -247,18 +235,75 @@ class _ProfileState extends State<Profile> {
   }
 
   peti() {
-    if (petiList.length == 0) {
-      return SizedBox(height: 0.1);
-    } else {
-      return ListView.builder(
-        shrinkWrap: true,
-        primary: false,
-        itemCount: petiList.length,
-        itemBuilder: (context, index) {
-          return PetiCardProfile(peti: petiList[index]);
-        },
-      );
-    }
+    return StreamBuilder<QuerySnapshot>(
+      stream: FireStoreService().getPetisLive(widget.profileOwnerId),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return SizedBox(
+            height: 0.0,
+          );
+        }
+        return ListView.builder(
+          shrinkWrap: true,
+          primary: false,
+          itemCount: snapshot.data.documents.length,
+          itemBuilder: (context, index) {
+            Peti peti = Peti.createFromDocument(snapshot.data.documents[index]);
+            return PetiCardProfile(
+              peti: peti,
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> complaint(activeUserId, profileOwnerId) async {
+    String note;
+    TextEditingController controller = TextEditingController();
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Form(
+            key: formkey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  maxLength: 300,
+                  controller: controller,
+                  validator: (value) {
+                    return value.isNotEmpty
+                        ? null
+                        : "LÜTFEN ŞİKAYET NOTUNUZU YAZIN";
+                  },
+                  onSaved: (String value) {
+                    note = value;
+                  },
+                  decoration: InputDecoration(hintText: "ŞİKAYET NOTU GİRİNİZ"),
+                )
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text("ŞİKAYET ET"),
+              onPressed: () async {
+                if (formkey.currentState.validate()) {
+                  formkey.currentState.save();
+                  await FireStoreService().createComplaint(
+                      note: note,
+                      receiverId: profileOwnerId,
+                      senderId: activeUserId);
+                  Navigator.pop(context);
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   logout() {

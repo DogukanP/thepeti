@@ -67,7 +67,14 @@ class FireStoreService {
     });
   }
 
-  Future<List<Petting>> getPetting(userId) async {
+  Future<Petting> getPetting(pettingId) async {
+    DocumentSnapshot doc =
+        await firestore.collection("Petting").document(pettingId).get();
+    Petting petting = Petting.createFromDocument(doc);
+    return petting;
+  }
+
+  Future<List<Petting>> getPettings(userId) async {
     QuerySnapshot snapshot = await firestore
         .collection("Petting")
         .where("userId", isEqualTo: userId)
@@ -102,6 +109,18 @@ class FireStoreService {
     });
   }
 
+  void deletePetting(pettingId) {
+    firestore
+        .collection("Petting")
+        .document(pettingId)
+        .get()
+        .then((DocumentSnapshot doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+  }
+
   Future<List<Peti>> getPetis(userId) async {
     QuerySnapshot snapshot = await firestore
         .collection("Peti")
@@ -110,6 +129,13 @@ class FireStoreService {
     List<Peti> petis =
         snapshot.documents.map((doc) => Peti.createFromDocument(doc)).toList();
     return petis;
+  }
+
+  Stream<QuerySnapshot> getPetisLive(userId) {
+    return firestore
+        .collection("Peti")
+        .where("ownerId", isEqualTo: userId)
+        .snapshots();
   }
 
   Future<Peti> getPeti(petiId) async {
@@ -146,43 +172,95 @@ class FireStoreService {
     StorageService().deletePetiPhoto(peti.imageURL);
   }
 
-  Future<void> createRequest({userId, pettingId, petiId}) async {
-    await firestore
-        .collection("Petting")
-        .document(pettingId)
-        .collection("Request")
-        .add({
+  Future<void> createComplaint({senderId, receiverId, note}) async {
+    await firestore.collection("Complaint").add({
+      "senderId": senderId,
+      "receiverId": receiverId,
+      "note": note,
+      "createdDate": time
+    });
+  }
+
+  Future<void> createRequest({
+    userId,
+    pettingId,
+    petiId,
+  }) async {
+    await firestore.collection("Request").add({
       "ownerId": userId,
       "petiId": petiId,
       "pettingId": pettingId,
+      "confirm": false,
     });
   }
 
-  getRequest(pettingId, activeUserId) async {
-    QuerySnapshot snapshot = await firestore
-        .collection("Petting")
-        .document(pettingId)
+  void editRequest(reqId) {
+    firestore
         .collection("Request")
-        .where("ownerId", isEqualTo: activeUserId)
+        .document(reqId)
+        .updateData({"confirm": true});
+  }
+
+  void deleteRequest(reqId) {
+    firestore
+        .collection("Request")
+        .document(reqId)
+        .get()
+        .then((DocumentSnapshot doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+  }
+
+  deleteRequestNoReqId(pettingId, ownerId) async {
+    QuerySnapshot doc = await firestore
+        .collection("Request")
+        .where("pettingId", isEqualTo: pettingId)
+        .where("ownerId", isEqualTo: ownerId)
         .getDocuments();
-    List<Request> request =
-        snapshot.documents.map((e) => Request.createFromDocument(e)).toList();
-    return request;
+    List<Request> requests =
+        doc.documents.map((e) => Request.createFromDocument(e)).toList();
+    requests.forEach((element) {
+      deleteRequest(element.requestId);
+    });
+  }
+
+  Future<bool> reqControl(pettingId, ownerId) async {
+    QuerySnapshot doc = await firestore
+        .collection("Request")
+        .where("pettingId", isEqualTo: pettingId)
+        .where("ownerId", isEqualTo: ownerId)
+        .getDocuments();
+    if (doc.documents.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  Future<List<Request>> getRequest(ownerId) async {
+    QuerySnapshot doc = await firestore
+        .collection("Request")
+        .where("ownerId", isEqualTo: ownerId)
+        .getDocuments();
+    List<Request> requests =
+        doc.documents.map((e) => Request.createFromDocument(e)).toList();
+    return requests;
+  }
+
+  Stream<QuerySnapshot> getNotConfirmRequest(String id) {
+    return firestore
+        .collection("Request")
+        .where("pettingId", isEqualTo: id)
+        .where("confirm", isEqualTo: false)
+        .snapshots();
+  }
+
+  Stream<QuerySnapshot> getConfirmRequest(String id) {
+    return firestore
+        .collection("Request")
+        .where("pettingId", isEqualTo: id)
+        .where("confirm", isEqualTo: true)
+        .snapshots();
   }
 }
-
-/*
-
-
-getRequest() async {
-    String activeUserId =
-        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
-    List<Request> request = await FireStoreService()
-        .getRequest("JSdDdIiQ3zx1Ee65GaiP", activeUserId);
-    setState(() {
-      requestList = request;
-    });
-  }
-
-
-*/

@@ -3,16 +3,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Request {
   String requestId;
   String petiId;
-  String userId;
+  String ownerId;
+  bool confirm;
+  String pettingId;
 
-  Request({this.requestId, this.petiId, this.userId});
+  Request(
+      {this.requestId,
+      this.petiId,
+      this.ownerId,
+      this.confirm,
+      this.pettingId});
 
   factory Request.createFromDocument(DocumentSnapshot doc) {
     var docData = doc.data;
     return Request(
       requestId: doc.documentID,
       petiId: docData["petiId"],
-      userId: docData["userId"],
+      ownerId: docData["ownerId"],
+      confirm: docData["confirm"],
+      pettingId: docData["pettingId"],
     );
   }
 }
