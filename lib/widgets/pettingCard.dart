@@ -3,9 +3,12 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/petting.dart';
+import 'package:thepeti/models/request.dart';
 import 'package:thepeti/models/user.dart';
 import 'package:thepeti/screens/myPetting.dart';
+import 'package:thepeti/screens/searchKeeper/searchDetail.dart';
 import 'package:thepeti/services/authorizationService.dart';
+import 'package:thepeti/services/fireStoreService.dart';
 
 class PettingCard extends StatefulWidget {
   final Petting petting;
@@ -18,6 +21,28 @@ class PettingCard extends StatefulWidget {
 
 class _PettingCardState extends State<PettingCard> {
   DateFormat formatter = DateFormat('dd/MM/yyyy');
+  bool isThereReq;
+  isThereRequest() async {
+    List<Request> reqs = await FireStoreService()
+        .getRequestsForControl(widget.petting.pettingId);
+    bool req;
+    if (reqs.length == 0) {
+      req = false;
+    } else
+      req = true;
+    setState(() {
+      isThereReq = req;
+    });
+  }
+
+  //üstteki satırları pettingScreen kısmında yaparsan yenilediğinde dinamik olarak gözükür
+
+  @override
+  void initState() {
+    super.initState();
+    isThereRequest();
+  }
+
   @override
   Widget build(BuildContext context) {
     String activeUserId =
@@ -34,7 +59,17 @@ class _PettingCardState extends State<PettingCard> {
               ),
             ),
           );
-        } else {}
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => SearchDetail(
+                petting: widget.petting,
+                user: widget.user,
+              ),
+            ),
+          );
+        }
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
@@ -57,15 +92,37 @@ class _PettingCardState extends State<PettingCard> {
               ),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "ONAY BEKLENİYOR",
-                        style: textPrimaryC,
-                      )
-                    ],
-                  ),
+                  activeUserId == widget.petting.userId
+                      ? Center(
+                          child: isThereReq == true
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "BAKIM İSTEĞİ VAR",
+                                      style: textPrimaryC,
+                                    ),
+                                  ],
+                                )
+                              : SizedBox(
+                                  height: 20.0,
+                                ),
+                        )
+                      : Center(
+                          child: isThereReq == true
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "BAKICI ONAYI BEKLENİYOR",
+                                      style: textPrimaryC,
+                                    ),
+                                  ],
+                                )
+                              : SizedBox(
+                                  height: 20.0,
+                                ),
+                        ),
                   Row(
                     children: [
                       Column(

@@ -78,6 +78,9 @@ class FireStoreService {
     QuerySnapshot snapshot = await firestore
         .collection("Petting")
         .where("userId", isEqualTo: userId)
+        .where("pettingDate",
+            isGreaterThanOrEqualTo: Timestamp.fromDate(
+                DateTime.now().subtract(new Duration(days: 1))))
         .orderBy("pettingDate", descending: false)
         .getDocuments();
     List<Petting> pettings = snapshot.documents
@@ -109,7 +112,7 @@ class FireStoreService {
     });
   }
 
-  void deletePetting(pettingId) {
+  void deletePetting(pettingId) async {
     firestore
         .collection("Petting")
         .document(pettingId)
@@ -117,6 +120,15 @@ class FireStoreService {
         .then((DocumentSnapshot doc) {
       if (doc.exists) {
         doc.reference.delete();
+      }
+    });
+    QuerySnapshot reqSnapshot = await firestore
+        .collection("Request")
+        .where("pettingId", isEqualTo: pettingId)
+        .getDocuments();
+    reqSnapshot.documents.forEach((element) {
+      if (element.exists) {
+        element.reference.delete();
       }
     });
   }
@@ -238,10 +250,32 @@ class FireStoreService {
     return true;
   }
 
-  Future<List<Request>> getRequest(ownerId) async {
+  Future<Request> getRequest(pettingId, ownerId) async {
+    QuerySnapshot doc = await firestore
+        .collection("Request")
+        .where("pettingId", isEqualTo: pettingId)
+        .where("ownerId", isEqualTo: ownerId)
+        .getDocuments();
+    List<Request> requests =
+        doc.documents.map((e) => Request.createFromDocument(e)).toList();
+    return requests.first;
+  }
+
+  Future<List<Request>> getRequests(ownerId) async {
     QuerySnapshot doc = await firestore
         .collection("Request")
         .where("ownerId", isEqualTo: ownerId)
+        .getDocuments();
+    List<Request> requests =
+        doc.documents.map((e) => Request.createFromDocument(e)).toList();
+    return requests;
+  }
+
+  Future<List<Request>> getRequestsForControl(pettingId) async {
+    QuerySnapshot doc = await firestore
+        .collection("Request")
+        .where("pettingId", isEqualTo: pettingId)
+        .where("confirm", isEqualTo: false)
         .getDocuments();
     List<Request> requests =
         doc.documents.map((e) => Request.createFromDocument(e)).toList();

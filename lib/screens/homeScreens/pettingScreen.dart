@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
@@ -16,16 +17,21 @@ class PettingScreen extends StatefulWidget {
 
 class _PettingScreenState extends State<PettingScreen> {
   List<Petting> pettingList = [];
+  bool isThereReq;
 
   Future<void> getPettings() async {
     String activeUserId =
         Provider.of<AuthorizationService>(context, listen: false).activeUserId;
     List<Petting> pettings = await FireStoreService().getPettings(activeUserId);
-    List<Request> requests = await FireStoreService().getRequest(activeUserId);
+    List<Request> requests = await FireStoreService().getRequests(activeUserId);
     requests.forEach((element) async {
       Petting petting = await FireStoreService().getPetting(element.pettingId);
       setState(() {
-        pettings.add(petting);
+        if (petting.pettingDate.seconds >=
+            Timestamp.fromDate(DateTime.now().subtract(new Duration(days: 1)))
+                .seconds) {
+          pettings.add(petting);
+        }
       });
     });
     setState(() {
@@ -91,6 +97,7 @@ class _PettingScreenState extends State<PettingScreen> {
                   );
                 }
                 User user = snapshot.data;
+
                 return PettingCard(
                   petting: petting,
                   user: user,

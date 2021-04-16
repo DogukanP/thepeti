@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/petting.dart';
+import 'package:thepeti/models/request.dart';
 import 'package:thepeti/models/user.dart';
 import 'package:thepeti/screens/homeScreens/homeScreen.dart';
 import 'package:thepeti/screens/profile/profile.dart';
@@ -27,14 +28,26 @@ class _SearchDetailState extends State<SearchDetail> {
   bool loading = false;
   bool active;
   bool isThere = false;
+  bool status;
   DateFormat formatter = DateFormat('dd/MM/yyyy');
 
   reqControl() async {
-    bool isThereReq = await FireStoreService().reqControl(
-        widget.petting.pettingId,
-        Provider.of<AuthorizationService>(context, listen: false).activeUserId);
+    String activeUserId =
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
+    bool isThereReq = await FireStoreService()
+        .reqControl(widget.petting.pettingId, activeUserId);
     setState(() {
       isThere = isThereReq;
+    });
+  }
+
+  req() async {
+    String activeUserId =
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
+    Request req = await FireStoreService()
+        .getRequest(widget.petting.pettingId, activeUserId);
+    setState(() {
+      status = req.confirm;
     });
   }
 
@@ -42,6 +55,7 @@ class _SearchDetailState extends State<SearchDetail> {
   void initState() {
     super.initState();
     reqControl();
+    req();
   }
 
   @override
@@ -128,6 +142,34 @@ class _SearchDetailState extends State<SearchDetail> {
               ),
             ],
           ),
+          active == false
+              ? Center(
+                  child: status == true
+                      ? SizedBox(
+                          height: 0.0,
+                        )
+                      : Column(
+                          children: [
+                            Divider(
+                              color: Colors.grey[500],
+                              thickness: 3.0,
+                              height: 100.0,
+                            ),
+                            Text(
+                              "BAKICI ONAYI BEKLENİYOR",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Montserrat"),
+                            ),
+                          ],
+                        ),
+                )
+              : SizedBox(
+                  height: 0.0,
+                ),
           Divider(
             color: Colors.grey[500],
             thickness: 3.0,
