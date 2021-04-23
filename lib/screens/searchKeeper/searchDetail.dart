@@ -16,8 +16,10 @@ class SearchDetail extends StatefulWidget {
   final Petting petting;
   final User user;
   final Peti peti;
+  final bool confirm;
 
-  const SearchDetail({Key key, this.petting, this.user, this.peti})
+  const SearchDetail(
+      {Key key, this.petting, this.user, this.peti, this.confirm})
       : super(key: key);
 
   @override
@@ -96,26 +98,14 @@ class _SearchDetailState extends State<SearchDetail> {
                     style: text18,
                   ),
                   SizedBox(
-                    height: 5.0,
+                    height: 10.0,
                   ),
-                  Row(
-                    children: [
-                      Text("PUAN", style: text18),
-                      SizedBox(
-                        width: 5.0,
-                      ),
-                      Icon(Icons.star),
-                    ],
+                  Text(
+                    widget.petting.district,
+                    style: text18,
                   ),
                 ],
-              ),
-              SizedBox(
-                width: 30.0,
-              ),
-              Text(
-                widget.petting.district,
-                style: text18,
-              ),
+              )
             ],
           ),
           SizedBox(
@@ -142,34 +132,38 @@ class _SearchDetailState extends State<SearchDetail> {
               ),
             ],
           ),
-          active == false
-              ? Center(
-                  child: status == true
-                      ? SizedBox(
-                          height: 0.0,
-                        )
-                      : Column(
-                          children: [
-                            Divider(
-                              color: Colors.grey[500],
-                              thickness: 3.0,
-                              height: 100.0,
-                            ),
-                            Text(
-                              "BAKICI ONAYI BEKLENİYOR",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: "Montserrat"),
-                            ),
-                          ],
-                        ),
-                )
-              : SizedBox(
+          widget.confirm == false
+              ? SizedBox(
                   height: 0.0,
-                ),
+                )
+              : active == false
+                  ? Center(
+                      child: status == true
+                          ? SizedBox(
+                              height: 0.0,
+                            )
+                          : Column(
+                              children: [
+                                Divider(
+                                  color: Colors.grey[500],
+                                  thickness: 3.0,
+                                  height: 100.0,
+                                ),
+                                Text(
+                                  "BAKICI ONAYI BEKLENİYOR",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: "Montserrat"),
+                                ),
+                              ],
+                            ),
+                    )
+                  : SizedBox(
+                      height: 0.0,
+                    ),
           Divider(
             color: Colors.grey[500],
             thickness: 3.0,

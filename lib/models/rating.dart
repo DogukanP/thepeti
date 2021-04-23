@@ -1,24 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Rating {
-  int ratingId;
-  int userId;
-  double point;
+  String ratingId;
+  String receiverId;
+  String senderId;
   String comment;
+  String rating;
+  String pettingId;
 
-  Rating({this.ratingId, this.userId, this.point, this.comment});
+  Rating(
+      {this.ratingId,
+      this.receiverId,
+      this.senderId,
+      this.comment,
+      this.pettingId,
+      this.rating});
 
-  Rating.fromJson(Map<String, dynamic> json) {
-    ratingId = json['ratingId'];
-    userId = json['userId'];
-    point = json['point'];
-    comment = json['comment'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['ratingId'] = this.ratingId;
-    data['userId'] = this.userId;
-    data['point'] = this.point;
-    data['comment'] = this.comment;
-    return data;
+  factory Rating.createFromDocument(DocumentSnapshot doc) {
+    var docData = doc.data;
+    return Rating(
+      ratingId: doc.documentID,
+      comment: docData["comment"],
+      pettingId: docData["pettingId"],
+      rating: docData["rating"],
+      receiverId: docData["receiverId"],
+      senderId: docData["senderId"],
+    );
   }
 }

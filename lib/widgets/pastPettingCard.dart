@@ -1,37 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
-import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/petting.dart';
 import 'package:thepeti/models/user.dart';
-import 'package:thepeti/screens/searchKeeper/searchDetail.dart';
+import 'package:thepeti/screens/rating/createRating.dart';
+import 'package:thepeti/screens/rating/createRatingMyP.dart';
+import 'package:thepeti/services/authorizationService.dart';
 
-class SearchCard extends StatefulWidget {
+class PastPettingCard extends StatefulWidget {
   final Petting petting;
   final User user;
-  final Peti peti;
 
-  const SearchCard({Key key, this.petting, this.user, this.peti})
-      : super(key: key);
+  const PastPettingCard({Key key, this.petting, this.user}) : super(key: key);
   @override
-  _SearchCardState createState() => _SearchCardState();
+  _PastPettingCardState createState() => _PastPettingCardState();
 }
 
-class _SearchCardState extends State<SearchCard> {
+class _PastPettingCardState extends State<PastPettingCard> {
   @override
   Widget build(BuildContext context) {
+    DateFormat formatter = DateFormat('dd/MM/yyyy');
+
+    String activeUserId =
+        Provider.of<AuthorizationService>(context, listen: false).activeUserId;
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SearchDetail(
-              user: widget.user,
-              petting: widget.petting,
-              peti: widget.peti,
-              confirm: false,
+        if (activeUserId == widget.petting.userId) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => CreateRatingMyP(
+                petting: widget.petting,
+                user: widget.user,
+              ),
             ),
-          ),
-        );
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (BuildContext context) => CreateRating(
+                petting: widget.petting,
+                user: widget.user,
+              ),
+            ),
+          );
+        }
       },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
@@ -54,21 +69,29 @@ class _SearchCardState extends State<SearchCard> {
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Text(
+                            formatter
+                                .format(widget.petting.pettingDate.toDate())
+                                .toString(),
+                            style: text30,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
                           Row(
                             children: [
                               CircleAvatar(
-                                radius: 30,
                                 backgroundColor: Colors.grey,
                                 backgroundImage: widget.user.imageURL.isNotEmpty
                                     ? NetworkImage(widget.user.imageURL)
-                                    // : AssetImage("assets/profile_photo.png"),
-                                    : null,
+                                    : AssetImage("assets/profile_photo.png"),
                               ),
                               SizedBox(
                                 width: 10,
@@ -78,20 +101,10 @@ class _SearchCardState extends State<SearchCard> {
                                     .split(" ")[0]
                                     .toString()
                                     .toUpperCase(),
-                                style: text23,
+                                style: text18,
                               ),
                             ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10.0),
-                            child: Text(
-                              widget.petting.district,
-                              style: text23,
-                            ),
-                          ),
+                          )
                         ],
                       ),
                       SizedBox(

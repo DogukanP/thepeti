@@ -5,6 +5,7 @@ import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/user.dart';
 import 'package:thepeti/screens/profile/editProfile.dart';
+import 'package:thepeti/screens/rating/ratingScreen.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
 import 'package:thepeti/widgets/button.dart';
@@ -227,6 +228,31 @@ class _ProfileState extends State<Profile> {
                 thickness: 3.0,
                 color: Colors.grey[500],
               ),
+              SizedBox(
+                height: 30.0,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RatingScreen(
+                              user: profileOwner,
+                            )),
+                  );
+                },
+                child: Text(
+                  "DEĞERLENDİRMELER ",
+                  style: textPrimaryC,
+                ),
+              ),
+              SizedBox(
+                height: 30.0,
+              ),
+              Divider(
+                color: Colors.grey[500],
+                thickness: 3,
+              )
             ],
           )
         ],

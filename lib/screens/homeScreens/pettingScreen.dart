@@ -5,6 +5,7 @@ import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/petting.dart';
 import 'package:thepeti/models/request.dart';
 import 'package:thepeti/models/user.dart';
+import 'package:thepeti/screens/homeScreens/pastPettings.dart';
 import 'package:thepeti/screens/profile/profile.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
@@ -17,7 +18,6 @@ class PettingScreen extends StatefulWidget {
 
 class _PettingScreenState extends State<PettingScreen> {
   List<Petting> pettingList = [];
-  bool isThereReq;
 
   Future<void> getPettings() async {
     String activeUserId =
@@ -48,7 +48,7 @@ class _PettingScreenState extends State<PettingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: Text(
           "PETTING",
@@ -83,28 +83,53 @@ class _PettingScreenState extends State<PettingScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: getPettings,
-        child: ListView.builder(
-          itemCount: pettingList.length,
-          itemBuilder: (context, index) {
-            Petting petting = pettingList[index];
-            return FutureBuilder(
-              future: FireStoreService().getUser(petting.userId),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Container(
-                    color: Colors.white,
-                    height: 500,
-                  );
-                }
-                User user = snapshot.data;
+        child: ListView(
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              primary: false,
+              itemCount: pettingList.length,
+              itemBuilder: (context, index) {
+                Petting petting = pettingList[index];
+                return FutureBuilder(
+                  future: FireStoreService().getUser(petting.userId),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Container(
+                        color: Colors.grey[100],
+                        height: 0,
+                      );
+                    }
+                    User user = snapshot.data;
 
-                return PettingCard(
-                  petting: petting,
-                  user: user,
+                    return PettingCard(
+                      petting: petting,
+                      user: user,
+                    );
+                  },
                 );
               },
-            );
-          },
+            ),
+            SizedBox(height: 35.0),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => PastPettings(),
+                  ),
+                );
+              },
+              child: Text(
+                "GEÇMİŞ PETTİNGLER",
+                textAlign: TextAlign.center,
+                style: textPrimaryC,
+              ),
+            ),
+            SizedBox(
+              height: 50.0,
+            ),
+          ],
         ),
       ),
     );
