@@ -1,32 +1,38 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Message {
-  int messageId;
-  int senderId;
-  int receiverId;
-  String sendDate;
-  String content;
+  final String senderId;
+  final String receiverId;
+  final bool isFromMe;
+  final Timestamp createdDate;
+  final String message;
 
   Message(
-      {this.messageId,
+      {this.isFromMe,
       this.senderId,
       this.receiverId,
-      this.sendDate,
-      this.content});
+      this.createdDate,
+      this.message});
 
-  Message.fromJson(Map<String, dynamic> json) {
-    messageId = json['messageId'];
-    senderId = json['senderId'];
-    receiverId = json['receiverId'];
-    sendDate = json['sendDate'];
-    content = json['content'];
+  Message.fromMap(Map<String, dynamic> map)
+      : senderId = map['senderId'],
+        receiverId = map['receiverId'],
+        isFromMe = map['isFromMe'],
+        createdDate = map['createdDate'],
+        message = map['message'];
+
+  Map<String, dynamic> toMap() {
+    return {
+      'senderId': senderId,
+      'receiverId': receiverId,
+      'isFromMe': isFromMe,
+      'createdDate': createdDate ?? FieldValue.serverTimestamp(),
+      'message': message,
+    };
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['messageId'] = this.messageId;
-    data['senderId'] = this.senderId;
-    data['receiverId'] = this.receiverId;
-    data['sendDate'] = this.sendDate;
-    data['content'] = this.content;
-    return data;
+  @override
+  String toString() {
+    return 'Message{senderId: $senderId,receiverId: $receiverId,isFromMe: $isFromMe,createdDate: $createdDate,message: $message}';
   }
 }

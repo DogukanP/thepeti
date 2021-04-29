@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/peti.dart';
+import 'package:thepeti/screens/chat/chatList.dart';
 import 'package:thepeti/screens/profile/profile.dart';
 import 'package:thepeti/screens/searchKeeper/searchKeeper2.dart';
 import 'package:thepeti/services/authorizationService.dart';
@@ -50,8 +51,14 @@ class _SearchKeeperState extends State<SearchKeeper> {
         backgroundColor: Colors.white,
         actions: [
           IconButton(
-              icon: Icon(Icons.mail_outline, color: Colors.black),
-              onPressed: null),
+            icon: Icon(Icons.mail_outline, color: Colors.black),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => ChatList(),
+              ),
+            ),
+          ),
           SizedBox(
             width: 5.0,
           ),

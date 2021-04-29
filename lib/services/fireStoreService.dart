@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:thepeti/models/chat.dart';
+import 'package:thepeti/models/message.dart';
 import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/petting.dart';
 import 'package:thepeti/models/rating.dart';
@@ -355,5 +357,66 @@ class FireStoreService {
     List<Rating> ratings =
         doc.documents.map((e) => Rating.createFromDocument(e)).toList();
     return ratings;
+  }
+
+  Stream<List<Message>> getMessages(senderId, receiverId) {
+    var snapshot = firestore
+        .collection("Chat")
+        .document(senderId + "-" + receiverId)
+        .collection("Messages")
+        .orderBy("createdDate", descending: true)
+        .snapshots();
+    return snapshot.map((event) =>
+        event.documents.map((e) => Message.fromMap(e.data)).toList());
+  }
+
+  Future<bool> saveMessage(Message message) async {
+    var messageId = firestore.collection("Chat").document().documentID;
+    var myDocId = message.senderId + "-" + message.receiverId;
+    var receiverDocId = message.receiverId + "-" + message.senderId;
+    var savedMessageMap = message.toMap();
+    await firestore
+        .collection("Chat")
+        .document(myDocId)
+        .collection("Messages")
+        .document(messageId)
+        .setData(savedMessageMap);
+    await firestore.collection("Chat").document(myDocId).setData({
+      "sender": message.senderId,
+      "receiver": message.receiverId,
+      "lastMessage": message.message,
+      "seen": false,
+      "createdDate": time
+    });
+    savedMessageMap.update("isFromMe", (value) => false);
+    await firestore
+        .collection("Chat")
+        .document(receiverDocId)
+        .collection("Messages")
+        .document(messageId)
+        .setData(savedMessageMap);
+    await firestore.collection("Chat").document(receiverDocId).setData({
+      "sender": message.receiverId,
+      "receiver": message.senderId,
+      "lastMessage": message.message,
+      "seen": false,
+      "createdDate": time
+    });
+    return true;
+  }
+
+  Future<List<Chat>> getChats(String activeUserId) async {
+    QuerySnapshot snapshot = await firestore
+        .collection("Chat")
+        .where("sender", isEqualTo: activeUserId)
+        .orderBy("createdDate", descending: true)
+        .getDocuments();
+
+    List<Chat> chats = [];
+    for (DocumentSnapshot snap in snapshot.documents) {
+      Chat chat = Chat.fromMap(snap.data);
+      chats.add(chat);
+    }
+    return chats;
   }
 }

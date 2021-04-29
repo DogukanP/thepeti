@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/screens/beKeeper/beKeeper2.dart';
+import 'package:thepeti/screens/chat/chatList.dart';
 import 'package:thepeti/screens/profile/profile.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/widgets/button.dart';
@@ -29,8 +30,14 @@ class _BeKeeperState extends State<BeKeeper> {
         backgroundColor: Colors.white,
         actions: [
           IconButton(
-              icon: Icon(Icons.mail_outline, color: Colors.black),
-              onPressed: null),
+            icon: Icon(Icons.mail_outline, color: Colors.black),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => ChatList(),
+              ),
+            ),
+          ),
           SizedBox(
             width: 5.0,
           ),
@@ -41,15 +48,15 @@ class _BeKeeperState extends State<BeKeeper> {
               ),
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => Profile(
-                        profileOwnerId: Provider.of<AuthorizationService>(
-                                context,
-                                listen: false)
-                            .activeUserId,
-                      ),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Profile(
+                      profileOwnerId: Provider.of<AuthorizationService>(context,
+                              listen: false)
+                          .activeUserId,
+                    ),
+                  ),
+                );
               })
         ],
       ),

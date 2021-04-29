@@ -148,7 +148,6 @@ class _CreateRatingState extends State<CreateRating> {
         Form(
           key: formKey,
           child: TextFormField(
-            autocorrect: true,
             maxLength: 300,
             maxLines: 15,
             minLines: 1,

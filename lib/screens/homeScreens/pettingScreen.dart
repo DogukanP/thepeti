@@ -5,6 +5,7 @@ import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/petting.dart';
 import 'package:thepeti/models/request.dart';
 import 'package:thepeti/models/user.dart';
+import 'package:thepeti/screens/chat/chatList.dart';
 import 'package:thepeti/screens/homeScreens/pastPettings.dart';
 import 'package:thepeti/screens/profile/profile.dart';
 import 'package:thepeti/services/authorizationService.dart';
@@ -57,8 +58,14 @@ class _PettingScreenState extends State<PettingScreen> {
         backgroundColor: Colors.white,
         actions: [
           IconButton(
-              icon: Icon(Icons.mail_outline, color: Colors.black),
-              onPressed: () {}),
+            icon: Icon(Icons.mail_outline, color: Colors.black),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => ChatList(),
+              ),
+            ),
+          ),
           SizedBox(
             width: 5.0,
           ),

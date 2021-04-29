@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
 import 'package:thepeti/models/peti.dart';
 import 'package:thepeti/models/user.dart';
+import 'package:thepeti/screens/chat/chatPage.dart';
 import 'package:thepeti/screens/profile/editProfile.dart';
 import 'package:thepeti/screens/rating/ratingScreen.dart';
 import 'package:thepeti/services/authorizationService.dart';
@@ -178,7 +179,16 @@ class _ProfileState extends State<Profile> {
                           height: 20.0,
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChatPage(
+                                  chattedUser: profileOwner,
+                                ),
+                              ),
+                            );
+                          },
                           child: Text(
                             "MESAJ GÖNDER",
                             style: textPrimaryC,
