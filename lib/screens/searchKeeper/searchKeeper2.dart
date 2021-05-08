@@ -46,6 +46,7 @@ class _SearchKeeper2State extends State<SearchKeeper2> {
           style: textBlackC,
         ),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
       ),
       body: Padding(

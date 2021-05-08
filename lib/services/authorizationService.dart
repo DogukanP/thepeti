@@ -33,6 +33,10 @@ class AuthorizationService {
     return firebaseAuth.signOut();
   }
 
+  Future<void> resetPassword(String eposta) async {
+    await firebaseAuth.sendPasswordResetEmail(email: eposta);
+  }
+
   Future<User> signInWithGoogle() async {
     GoogleSignInAccount googleAccount = await GoogleSignIn().signIn();
     GoogleSignInAuthentication googleAuthCard =

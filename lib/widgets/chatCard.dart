@@ -30,6 +30,7 @@ class _ChatCardState extends State<ChatCard> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(25.0, 8.0, 25.0, 8.0),
         child: Container(
+          height: 85.0,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25.0),
             color: Colors.white,
@@ -42,15 +43,16 @@ class _ChatCardState extends State<ChatCard> {
               )
             ],
           ),
-          child: ListTile(
-            title: Text(
-              widget.user.firstName,
-              style: text13,
-            ),
-            subtitle: Text(widget.chat.lastMessage),
-            leading: CircleAvatar(
-              radius: 30.0,
-              backgroundImage: NetworkImage(widget.user.imageURL),
+          child: Center(
+            child: ListTile(
+              title: Text(
+                widget.user.firstName,
+                style: text18,
+              ),
+              leading: CircleAvatar(
+                radius: 30.0,
+                backgroundImage: NetworkImage(widget.user.imageURL),
+              ),
             ),
           ),
         ),

@@ -30,7 +30,7 @@ class _MessageBubbleState extends State<MessageBubble> {
     var isFromMe = widget.message.isFromMe;
     if (isFromMe) {
       return Padding(
-        padding: EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(4.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [

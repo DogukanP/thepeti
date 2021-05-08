@@ -74,6 +74,7 @@ class _SearchDetailState extends State<SearchDetail> {
           style: textBlackC,
         ),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
       ),
       body: ListView(

@@ -56,6 +56,7 @@ class _PettingScreenState extends State<PettingScreen> {
           style: textBlackC,
         ),
         backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: Icon(Icons.mail_outline, color: Colors.black),
@@ -102,9 +103,8 @@ class _PettingScreenState extends State<PettingScreen> {
                   future: FireStoreService().getUser(petting.userId),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
-                      return Container(
-                        color: Colors.grey[100],
-                        height: 0,
+                      return SizedBox(
+                        height: 180.0,
                       );
                     }
                     User user = snapshot.data;

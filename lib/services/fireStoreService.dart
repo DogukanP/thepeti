@@ -419,4 +419,35 @@ class FireStoreService {
     }
     return chats;
   }
+
+  Future<List<Message>> getMessageWithPagination(String senderId,
+      String receiverId, Message lastMessage, int limit) async {
+    QuerySnapshot querySnapshot;
+    List<Message> allMessages = [];
+
+    if (lastMessage == null) {
+      querySnapshot = await firestore
+          .collection("Chat")
+          .document(senderId + "-" + receiverId)
+          .collection("Messages")
+          .orderBy("createdDate", descending: true)
+          .limit(limit)
+          .getDocuments();
+    } else {
+      querySnapshot = await firestore
+          .collection("Chat")
+          .document(senderId + "-" + receiverId)
+          .collection("Messages")
+          .orderBy("createdDate", descending: true)
+          .startAfter([lastMessage.createdDate])
+          .limit(limit)
+          .getDocuments();
+      await Future.delayed(Duration(seconds: 1));
+    }
+    for (DocumentSnapshot snap in querySnapshot.documents) {
+      Message message = Message.fromMap(snap.data);
+      allMessages.add(message);
+    }
+    return allMessages;
+  }
 }

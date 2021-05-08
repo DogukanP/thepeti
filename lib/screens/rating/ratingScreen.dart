@@ -41,6 +41,7 @@ class _RatingScreenState extends State<RatingScreen> {
         ),
         backgroundColor: Colors.white,
         centerTitle: true,
+        automaticallyImplyLeading: false,
       ),
       body: ratingList.length == 0
           ? Padding(

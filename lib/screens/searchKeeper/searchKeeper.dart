@@ -49,6 +49,7 @@ class _SearchKeeperState extends State<SearchKeeper> {
           style: textBlackC,
         ),
         backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: Icon(Icons.mail_outline, color: Colors.black),

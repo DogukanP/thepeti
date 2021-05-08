@@ -41,6 +41,7 @@ class _PettingReqState extends State<PettingReq> {
           style: textBlackC,
         ),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
       ),
       body: Padding(

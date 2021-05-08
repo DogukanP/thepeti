@@ -37,6 +37,7 @@ class _ProfileState extends State<Profile> {
           style: textBlackC,
         ),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         actions: [
           Center(

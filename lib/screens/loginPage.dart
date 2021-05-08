@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:thepeti/constants.dart';
+import 'package:thepeti/screens/forgotPassword.dart';
 // import 'package:thepeti/screens/forgotPassword.dart';
 import 'package:thepeti/screens/register/register1.dart';
 import 'package:thepeti/services/authorizationService.dart';
@@ -116,7 +117,14 @@ class _LoginPageState extends State<LoginPage> {
             alignment: Alignment(1.0, 0.0),
             padding: EdgeInsets.only(top: 15.0, left: 20.0),
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ForgotPassword(),
+                  ),
+                );
+              },
               child: Text(
                 "ŞİFREMİ UNUTTUM",
                 style: textPrimaryC,

@@ -26,6 +26,7 @@ class _CreateRatingMyPState extends State<CreateRatingMyP> {
           style: textBlackC,
         ),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
       ),
       body: ListView(

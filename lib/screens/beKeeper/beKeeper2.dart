@@ -26,6 +26,7 @@ class _BeKeeper2State extends State<BeKeeper2> {
           style: textBlackC,
         ),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
       ),
       body: ListView(

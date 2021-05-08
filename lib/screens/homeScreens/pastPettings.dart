@@ -53,6 +53,7 @@ class _PastPettingsState extends State<PastPettings> {
           style: textBlackC,
         ),
         backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
       ),
       body: ListView.builder(
         shrinkWrap: true,

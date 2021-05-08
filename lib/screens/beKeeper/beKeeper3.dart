@@ -33,6 +33,7 @@ class _BeKeeper3State extends State<BeKeeper3> {
           style: textBlackC,
         ),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
       ),
       body: ListView(
