@@ -111,7 +111,7 @@ class _CreateRatingState extends State<CreateRating> {
                               ),
                               Expanded(
                                 child: Text(
-                                  "BU PETTİNG DAHA ÖNCE DEĞERLENDİRİLDİ",
+                                  "BU KULLANICI İÇİN DAHA ÖNCE DEĞERLENDİRME YAPILDI.",
                                   textAlign: TextAlign.center,
                                   style: text18,
                                 ),

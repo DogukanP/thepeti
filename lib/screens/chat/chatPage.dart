@@ -43,74 +43,81 @@ class _ChatPageState extends State<ChatPage> {
       body: Center(
         child: Column(
           children: [
-            Expanded(
-              child: StreamBuilder<List<Message>>(
-                stream: FireStoreService().getMessages(
-                    Provider.of<AuthorizationService>(context, listen: false)
-                        .activeUserId,
-                    widget.chattedUser.userId),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return ListView.builder(
-                    controller: scrollController,
-                    reverse: true,
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      return MessageBubble(
-                        message: snapshot.data[index],
-                        chattedUser: widget.chattedUser,
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-            Container(height: 8.0, color: Colors.white),
-            Container(
-              padding: EdgeInsets.only(bottom: 8.0, left: 8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: messageController,
-                      cursorColor: primaryColor,
-                      decoration: InputDecoration(
-                        hintText: "MESAJINIZI YAZIN",
-                        fillColor: Colors.white,
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                          borderSide: BorderSide(color: primaryColor),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50),
-                          borderSide: BorderSide(color: primaryColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 4.0),
-                    child: FloatingActionButton(
-                      elevation: 0,
-                      backgroundColor: primaryColor,
-                      child: Icon(
-                        Icons.navigation,
-                        size: 30.0,
-                        color: Colors.white,
-                      ),
-                      onPressed: () => sendMessage(),
-                    ),
-                  ),
-                ],
-              ),
-            )
+            buildMessageList(),
+            buildNewMessage(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildMessageList() {
+    return Expanded(
+      child: StreamBuilder<List<Message>>(
+        stream: FireStoreService().getMessages(
+            Provider.of<AuthorizationService>(context, listen: false)
+                .activeUserId,
+            widget.chattedUser.userId),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return ListView.builder(
+            controller: scrollController,
+            reverse: true,
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, index) {
+              return MessageBubble(
+                message: snapshot.data[index],
+                chattedUser: widget.chattedUser,
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildNewMessage() {
+    return Container(
+      padding: EdgeInsets.only(bottom: 8.0, left: 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: messageController,
+              cursorColor: primaryColor,
+              decoration: InputDecoration(
+                hintText: "MESAJINIZI YAZIN",
+                fillColor: Colors.white,
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide: BorderSide(color: primaryColor),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(50),
+                  borderSide: BorderSide(color: primaryColor),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 4.0),
+            child: FloatingActionButton(
+              elevation: 0,
+              backgroundColor: primaryColor,
+              child: Icon(
+                Icons.navigation,
+                size: 30.0,
+                color: Colors.white,
+              ),
+              onPressed: () => sendMessage(),
+            ),
+          ),
+        ],
       ),
     );
   }

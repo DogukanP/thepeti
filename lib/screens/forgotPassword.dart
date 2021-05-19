@@ -33,7 +33,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     children: <Widget>[
                       Container(
                         child: Text(
-                          "ŞİFREMİ UNUTTUM",
+                          "ŞİFREMİ DEĞİŞTİR",
                           style: text70,
                         ),
                       ),
@@ -57,7 +57,30 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         onSaved: (value) => email = value,
                       ),
                       SizedBox(
-                        height: 130.0,
+                        height: 45.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            color: primaryColor,
+                            size: 60.0,
+                          ),
+                          SizedBox(
+                            width: 15.0,
+                          ),
+                          Expanded(
+                            child: Text(
+                              "YUKARIDA GİRDİĞİN MAİL ADRESİNE BİR LİNK GÖNDERECEĞİZ. BU LİNKE TIKLAYARAK ŞİFRENİ DEĞİŞTİREBİLİRSİN",
+                              textAlign: TextAlign.center,
+                              style: text13,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 100.0,
                       ),
                       Button(
                         buttonColor: primaryColor,
