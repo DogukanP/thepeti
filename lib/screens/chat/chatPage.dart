@@ -18,6 +18,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   TextEditingController messageController = TextEditingController();
   ScrollController scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

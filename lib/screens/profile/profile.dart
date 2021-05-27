@@ -119,7 +119,7 @@ class _ProfileState extends State<Profile> {
                 backgroundColor: Colors.grey[300],
                 radius: 50.0,
                 backgroundImage: profileData.imageURL.isNotEmpty
-                    ? NetworkImage(profileData.imageURL)
+                    ? NetworkImage(profileData?.imageURL)
                     : AssetImage("assets/profile_photo.png"),
               ),
               Expanded(

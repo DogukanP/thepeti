@@ -21,9 +21,18 @@ class MyPetting extends StatefulWidget {
 
 class _MyPettingState extends State<MyPetting> {
   DateFormat formatter = DateFormat('dd/MM/yyyy');
+  bool isSwitched = false;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  @override
+  void initState() {
+    super.initState();
+    isSwitched = widget.petting.confirm;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         title: Text(
           "PETTING - " +
@@ -32,6 +41,35 @@ class _MyPettingState extends State<MyPetting> {
                   .toString(),
           style: textBlackC,
         ),
+        actions: [
+          Switch(
+            value: isSwitched,
+            onChanged: (value) {
+              print(widget.petting.confirm);
+              setState(() {
+                isSwitched = value;
+                FireStoreService()
+                    .editPetting(widget.petting.pettingId, isSwitched);
+                if (isSwitched) {
+                  scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      backgroundColor: primaryColor,
+                      content: Text("Petting isteklere açılmıştır."),
+                    ),
+                  );
+                } else
+                  scaffoldKey.currentState.showSnackBar(
+                    SnackBar(
+                      backgroundColor: primaryColor,
+                      content: Text("Petting isteklere kapatılmıştır."),
+                    ),
+                  );
+              });
+            },
+            activeTrackColor: Colors.lightGreenAccent,
+            activeColor: primaryColor,
+          ),
+        ],
         centerTitle: true,
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
@@ -41,6 +79,10 @@ class _MyPettingState extends State<MyPetting> {
         children: [
           Column(
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [],
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

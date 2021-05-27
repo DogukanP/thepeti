@@ -67,7 +67,15 @@ class FireStoreService {
       "pettingDate": pettingDate,
       "note": note,
       "createdDate": time,
+      "confirm": true,
     });
+  }
+
+  void editPetting(pettingId, bool isSwitched) {
+    firestore
+        .collection("Petting")
+        .document(pettingId)
+        .updateData({"confirm": isSwitched});
   }
 
   Future<Petting> getPetting(pettingId) async {
@@ -81,14 +89,6 @@ class FireStoreService {
     QuerySnapshot snapshot = await firestore
         .collection("Petting")
         .where("userId", isEqualTo: userId)
-        // .where(
-        //   "pettingDate",
-        //   isGreaterThanOrEqualTo: Timestamp.fromDate(
-        //     DateTime.now().subtract(
-        //       new Duration(days: 1),
-        //     ),
-        //   ),
-        // )
         .where("pettingDate", isGreaterThanOrEqualTo: DateTime.now())
         .orderBy("pettingDate", descending: false)
         .getDocuments();
@@ -102,9 +102,6 @@ class FireStoreService {
     QuerySnapshot snapshot = await firestore
         .collection("Petting")
         .where("userId", isEqualTo: userId)
-        // .where("pettingDate",
-        //     isLessThan: Timestamp.fromDate(
-        //         DateTime.now().subtract(new Duration(days: 1))))
         .where("pettingDate", isLessThan: DateTime.now())
         .orderBy("pettingDate", descending: false)
         .getDocuments();
@@ -119,6 +116,7 @@ class FireStoreService {
         .collection("Petting")
         .where("city", isEqualTo: city)
         .where("pettingDate", isEqualTo: timestamp)
+        .where("confirm", isEqualTo: true)
         .orderBy("price")
         .getDocuments();
     List<Petting> pettings = snapshot.documents

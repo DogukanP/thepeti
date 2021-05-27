@@ -8,6 +8,7 @@ class Petting {
   final String district;
   final String city;
   final String note;
+  final bool confirm;
 
   Petting(
       {this.pettingId,
@@ -16,7 +17,8 @@ class Petting {
       this.pettingDate,
       this.district,
       this.city,
-      this.note});
+      this.note,
+      this.confirm});
 
   factory Petting.createFromDocument(DocumentSnapshot doc) {
     var docData = doc.data;
@@ -28,6 +30,7 @@ class Petting {
       district: docData["district"],
       pettingDate: docData["pettingDate"],
       note: docData["note"],
+      confirm: docData["confirm"],
     );
   }
 }

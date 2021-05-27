@@ -20,7 +20,7 @@ class CreateRating extends StatefulWidget {
 class _CreateRatingState extends State<CreateRating> {
   bool isThere = false;
   var formKey = GlobalKey<FormState>();
-  double rating = 0.0;
+  int rating = 0;
   String comment;
 
   ratingControl() async {
@@ -136,10 +136,10 @@ class _CreateRatingState extends State<CreateRating> {
           isReadOnly: false,
           allowHalfRating: false,
           spacing: 5,
-          rating: rating,
+          rating: rating.toDouble(),
           onRated: (value) {
             setState(() {
-              rating = value;
+              rating = value.toInt();
             });
           },
         ),
