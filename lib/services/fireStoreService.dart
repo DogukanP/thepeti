@@ -116,7 +116,7 @@ class FireStoreService {
         .collection("Petting")
         .where("city", isEqualTo: city)
         .where("pettingDate", isEqualTo: timestamp)
-        .where("confirm", isEqualTo: true)
+        // .where("confirm", isEqualTo: true)
         .orderBy("price")
         .getDocuments();
     List<Petting> pettings = snapshot.documents
@@ -447,5 +447,14 @@ class FireStoreService {
       allMessages.add(message);
     }
     return allMessages;
+  }
+
+  Future<String> getToken(String userId) async {
+    DocumentSnapshot token = await firestore.document("tokens/" + userId).get();
+    if (token != null) {
+      return token.data["token"];
+    } else {
+      return null;
+    }
   }
 }

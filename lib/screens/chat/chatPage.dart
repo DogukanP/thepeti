@@ -5,6 +5,7 @@ import 'package:thepeti/models/message.dart';
 import 'package:thepeti/models/user.dart';
 import 'package:thepeti/services/authorizationService.dart';
 import 'package:thepeti/services/fireStoreService.dart';
+import 'package:thepeti/services/notificationService.dart';
 import 'package:thepeti/widgets/messageBubble.dart';
 
 class ChatPage extends StatefulWidget {
@@ -18,6 +19,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   TextEditingController messageController = TextEditingController();
   ScrollController scrollController = ScrollController();
+  Map<String, String> userTokens = Map<String, String>();
 
   @override
   Widget build(BuildContext context) {
@@ -136,6 +138,21 @@ class _ChatPageState extends State<ChatPage> {
         messageController.clear();
         scrollController.animateTo(0.0,
             duration: const Duration(milliseconds: 10), curve: Curves.easeOut);
+        var token = "";
+        if (userTokens.containsKey(savedMessage.receiverId)) {
+          token = userTokens[savedMessage.receiverId];
+        } else {
+          token = await FireStoreService().getToken(savedMessage.receiverId);
+          if (token != null) userTokens[savedMessage.receiverId] = token;
+        }
+
+        if (token != null) {
+          User sender = await FireStoreService().getUser(savedMessage.senderId);
+          await NotificationService()
+              .sendNotification(savedMessage, sender, token);
+          return true;
+        } else
+          return false;
       }
     }
   }

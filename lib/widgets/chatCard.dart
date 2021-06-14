@@ -51,6 +51,7 @@ class _ChatCardState extends State<ChatCard> {
               ),
               leading: CircleAvatar(
                 radius: 30.0,
+                backgroundColor: Colors.grey,
                 backgroundImage: NetworkImage(widget.user.imageURL),
               ),
             ),

@@ -1,5 +1,7 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:thepeti/constants.dart';
+import 'package:thepeti/notificationHandler.dart';
 import 'package:thepeti/screens/beKeeper/beKeeper.dart';
 import 'package:thepeti/screens/homeScreens/pettingScreen.dart';
 import 'package:thepeti/screens/searchKeeper/searchKeeper.dart';
@@ -10,6 +12,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+
   int activePageNumber = 0;
   PageController pageController;
 
@@ -17,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     pageController = PageController();
+    NotificationHandler().initializeFCMNotification(context);
   }
 
   @override
