@@ -116,7 +116,7 @@ class FireStoreService {
         .collection("Petting")
         .where("city", isEqualTo: city)
         .where("pettingDate", isEqualTo: timestamp)
-        // .where("confirm", isEqualTo: true)
+        .where("confirm", isEqualTo: true)
         .orderBy("price")
         .getDocuments();
     List<Petting> pettings = snapshot.documents
